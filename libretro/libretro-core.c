@@ -362,7 +362,7 @@ void retro_get_system_info(struct retro_system_info *info)
 {
    memset(info, 0, sizeof(*info));
    info->library_name     = "Atari800";
-   info->library_version  = "3.1.0";
+   info->library_version  = "3.1.0" GIT_VERSION;
    info->valid_extensions = "xfd|atr|cdm|cas|bin|a52|zip";
    info->need_fullpath    = true;
    info->block_extract = false;
