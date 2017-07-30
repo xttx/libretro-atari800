@@ -3,7 +3,7 @@ INCFLAGS := -I$(CORE_DIR) \
             -I$(CORE_DIR)/libretro  \
             -I$(CORE_DIR)/libretro/libco 
 
-ifeq ($(platform), wiiu)
+ifeq ($(STATIC_LINKING), 1)
 INCFLAGS += -I$(CORE_DIR)/libretro/include
 endif
 
