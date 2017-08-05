@@ -398,6 +398,10 @@ void retro_audio_cb( short l, short r)
 	audio_cb(l,r);
 }
 
+/* Forward declarations */
+void retro_sound_update(void);
+void Retro_PollEvent(void);
+
 void retro_run(void)
 {
    int x;
@@ -406,36 +410,35 @@ void retro_run(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
       update_variables();
-  
-	if(pauseg==0){
 
-   if (ToggleTV == 1)
-   {
-      struct retro_system_av_info ninfo;
-	
-      retro_fps=CURRENT_TV==312?49.8607597:59.9227434;
+   if(pauseg==0){
 
-      retro_get_system_av_info(&ninfo);
+      if (ToggleTV == 1)
+      {
+         struct retro_system_av_info ninfo;
 
-      environ_cb(RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &ninfo);
+         retro_fps=CURRENT_TV==312?49.8607597:59.9227434;
 
-      if (log_cb)
-         log_cb(RETRO_LOG_INFO, "ChangeAV: w:%d h:%d ra:%f.\n",
-               ninfo.geometry.base_width, ninfo.geometry.base_height, ninfo.geometry.aspect_ratio);
+         retro_get_system_av_info(&ninfo);
 
-      ToggleTV=0;
+         environ_cb(RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &ninfo);
+
+         if (log_cb)
+            log_cb(RETRO_LOG_INFO, "ChangeAV: w:%d h:%d ra:%f.\n",
+                  ninfo.geometry.base_width, ninfo.geometry.base_height, ninfo.geometry.aspect_ratio);
+
+         ToggleTV=0;
+      }
+
+      if(retro_sound_finalized)
+         retro_sound_update();
+
+      Retro_PollEvent();
    }
 
-
-		if(retro_sound_finalized)retro_sound_update();
-
-		Retro_PollEvent();
-	}
-
    video_cb(Retro_Screen,retrow,retroh,retrow<<PIXEL_BYTES);
- 
-   co_switch(emuThread);
 
+   co_switch(emuThread);
 }
 
 unsigned int lastdown,lastup,lastchar;
