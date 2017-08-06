@@ -5,7 +5,7 @@ ifneq ($(GIT_VERSION)," unknown")
 endif
 
 DEBUG   = 0
-LOG_PERFORMANCE = 1
+LOG_PERFORMANCE = 0
 HAVE_COMPAT = 0
 
 SOURCES_C   :=
@@ -279,12 +279,9 @@ endif
 ifeq ($(DEBUG), 1)
 	CFLAGS += -O0 -g
 	CXXFLAGS += -O0 -g
-else ifeq ($(platform), emscripten)
-	CFLAGS += -O2
-	CXXFLAGS += -O2 -fno-exceptions -fno-rtti -DHAVE_STDINT_H
 else
-	CFLAGS += -O3
-	CXXFLAGS += -O3 -fno-exceptions -fno-rtti -DHAVE_STDINT_H
+	CFLAGS += -O2 -DNDEBUG
+	CXXFLAGS += -O2 -fno-exceptions -fno-rtti -DHAVE_STDINT_H -DNDEBUG
 endif
 
 ifeq ($(LOG_PERFORMANCE), 1)
