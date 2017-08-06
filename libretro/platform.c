@@ -87,6 +87,38 @@ int skel_main(int argc, char **argv)
 	}
 }
 
+void retro_PaletteUpdate(void)
+{
+	int i;
+
+	if (!palette) {
+		if ( !(palette = malloc(256 * sizeof(UWORD))) ) {
+			Log_print("Cannot allocate memory for palette conversion.");
+			return;
+		}
+	}
+	memset(palette, 0, 256 * sizeof(UWORD));
+
+	for (i = 0; i < 256; i++){
+
+		palette[i] = ((Colours_table[i] & 0x00f80000) >> 8) |
+					 ((Colours_table[i] & 0x0000fc00) >> 5) | 
+	 	   			 ((Colours_table[i] & 0x000000f8) >> 3);
+
+	}
+
+	/* force full redraw */
+	Screen_EntireDirty();
+}
+
+int retro_InitGraphics(void)
+{
+
+	/* Initialize palette */
+	retro_PaletteUpdate();
+
+	return TRUE;
+}
 
 int PLATFORM_Initialise(int *argc, char *argv[])
 {
@@ -99,6 +131,14 @@ int PLATFORM_Initialise(int *argc, char *argv[])
 	INPUT_direct_mouse = TRUE;
 
 	return TRUE;
+}
+
+void retro_ExitGraphics(void)
+{
+
+	if (palette)
+		free(palette);
+	palette = NULL;
 }
 
 int PLATFORM_Exit(int run_monitor)
@@ -537,6 +577,33 @@ int PLATFORM_GetRawKey(void)
 }
 */
 
+void retro_Render(void)
+{
+	int x, y;
+	UBYTE *src, *src_line;
+	UWORD *dst, *dst_line;
+
+	src_line = ((UBYTE *) Screen_atari) + 24;
+	dst_line = Retro_Screen;
+
+	for (y = 0; y < 240; y++) {
+
+		src = src_line;
+		dst = dst_line;
+
+		for (x = 0; x < 336; x += 8) {
+
+			*dst++ = palette[*src++]; *dst++ = palette[*src++];
+					*dst++ = palette[*src++]; *dst++ = palette[*src++];
+					*dst++ = palette[*src++]; *dst++ = palette[*src++];
+					*dst++ = palette[*src++]; *dst++ = palette[*src++];
+		}
+
+		src_line += 384;
+		dst_line += 336;
+	}
+}
+
 void PLATFORM_DisplayScreen(void)
 {
 	retro_Render();
@@ -686,78 +753,3 @@ void PLATFORM_SoundUnlock(void)
 {
 
 }
-
-/////////////////////////////////////////////////////////////
-//   VIDEO
-/////////////////////////////////////////////////////////////
-
-
-void retro_PaletteUpdate(void)
-{
-	int i;
-
-	if (!palette) {
-		if ( !(palette = malloc(256 * sizeof(UWORD))) ) {
-			Log_print("Cannot allocate memory for palette conversion.");
-			return;
-		}
-	}
-	memset(palette, 0, 256 * sizeof(UWORD));
-
-	for (i = 0; i < 256; i++){
-
-		palette[i] = ((Colours_table[i] & 0x00f80000) >> 8) |
-					 ((Colours_table[i] & 0x0000fc00) >> 5) | 
-	 	   			 ((Colours_table[i] & 0x000000f8) >> 3);
-
-	}
-
-	/* force full redraw */
-	Screen_EntireDirty();
-}
-
-int retro_InitGraphics(void)
-{
-
-	/* Initialize palette */
-	retro_PaletteUpdate();
-
-	return TRUE;
-}
-
-void retro_Render(void)
-{
-	int x, y;
-	UBYTE *src, *src_line;
-	UWORD *dst, *dst_line;
-
-	src_line = ((UBYTE *) Screen_atari) + 24;
-	dst_line = Retro_Screen;
-
-	for (y = 0; y < 240; y++) {
-
-		src = src_line;
-		dst = dst_line;
-
-		for (x = 0; x < 336; x += 8) {
-
-			*dst++ = palette[*src++]; *dst++ = palette[*src++];
-					*dst++ = palette[*src++]; *dst++ = palette[*src++];
-					*dst++ = palette[*src++]; *dst++ = palette[*src++];
-					*dst++ = palette[*src++]; *dst++ = palette[*src++];
-		}
-
-		src_line += 384;
-		dst_line += 336;
-	}
-}
-
-
-void retro_ExitGraphics(void)
-{
-
-	if (palette)
-		free(palette);
-	palette = NULL;
-}
-
