@@ -304,7 +304,7 @@ static void update_variables(void)
 	 {
 	   if (Atari800_tv_mode == Atari800_TV_NTSC)
 	     {
-	       ARTIFACT_Set(ARTIFACT_NTSC_NEW);
+	       ARTIFACT_Set(ARTIFACT_NTSC_OLD);
 	       ARTIFACT_SetTVMode(Atari800_TV_NTSC);
 	     }
 	   else if (Atari800_tv_mode == Atari800_TV_PAL)
