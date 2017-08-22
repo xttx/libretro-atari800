@@ -33,6 +33,26 @@ extern char RPATH[512];
 extern char RETRO_DIR[512];
 int cap32_statusbar=0;
 
+/* atari800 configuration vars */
+extern int Atari800_machine_type;
+extern int Atari800_builtin_basic;
+extern int Atari800_keyboard_leds;
+extern int Atari800_f_keys;
+extern int Atari800_jumper;
+extern int Atari800_builtin_game;
+extern int Atari800_keyboard_detached;
+extern int MEMORY_ram_size;
+extern int Atari800_disable_basic;
+extern int ESC_enable_sio_patch;
+extern int Devices_enable_h_patch;
+extern int Devices_enable_p_patch;
+extern int Devices_enable_r_patch;
+extern int CASSETTE_hold_start;
+
+#define Atari800_TV_UNSET 0
+#define Atari800_TV_PAL 312
+#define Atari800_TV_NTSC 262
+
 #include "cmdline.c"
 
 extern void update_input(void);
