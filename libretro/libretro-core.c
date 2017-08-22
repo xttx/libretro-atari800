@@ -5,6 +5,7 @@
 #include "devices.h"
 #include "esc.h"
 #include "memory.h"
+#include "cassette.h"
 
 cothread_t mainThread;
 cothread_t emuThread;
