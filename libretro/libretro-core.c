@@ -163,8 +163,118 @@ static void update_variables(void)
       texture_init();
       //reset_screen();
    }
-  
 
+   var.key = "atari800_system";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "400/800 (OS B)") == 0)
+	 {
+	   Atari800_machine_type = Atari800_MACHINE_800;
+	   MEMORY_ram_size = 48;
+	   Atari800_builtin_basic = FALSE;
+	   Atari800_keyboard_leds = FALSE;
+	   Atari800_f_keys = FALSE;
+	   Atari800_jumper = FALSE;
+	   Atari800_builtin_game = FALSE;
+	   Atari800_keyboard_detached = FALSE;
+	 }
+       else if (strcmp(var.value, "800XL (64K)") == 0)
+	 {
+	   Atari800_machine_type = Atari800_MACHINE_XLXE;
+	   MEMORY_ram_size = 64;
+	   Atari800_builtin_basic = TRUE;
+	   Atari800_keyboard_leds = FALSE;
+	   Atari800_f_keys = FALSE;
+	   Atari800_jumper = FALSE;
+	   Atari800_builtin_game = FALSE;
+	   Atari800_keyboard_detached = FALSE;
+	 }
+       else if (strcmp(var.value, "130XE (128K)") == 0)
+	 {
+	   Atari800_machine_type = Atari800_MACHINE_XLXE;
+	   MEMORY_ram_size = 128;
+	   Atari800_builtin_basic = TRUE;
+	   Atari800_keyboard_leds = FALSE;
+	   Atari800_f_keys = FALSE;
+	   Atari800_jumper = FALSE;
+	   Atari800_builtin_game = FALSE;
+	   Atari800_keyboard_detached = FALSE;
+	 }
+       else if (strcmp(var.value, "5200") == 0)
+	 {
+	   Atari800_machine_type = Atari800_MACHINE_5200;
+	   MEMORY_ram_size = 16;
+	   Atari800_builtin_basic = FALSE;
+	   Atari800_keyboard_leds = FALSE;
+	   Atari800_f_keys = FALSE;
+	   Atari800_jumper = FALSE;
+	   Atari800_builtin_game = FALSE;
+	   Atari800_keyboard_detached = FALSE;
+	 }
+     }
+   
+   var.key = "atari800_ntscpal";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "enabled") == 0)
+	 {
+	   Atari800_tv_mode = Atari800_TV_NTSC;
+	 }
+       else if (strcmp(var.value, "disabled") == 0)
+	 {
+	   Atari800_tv_mode = Atari800_TV_PAL;
+	 }
+     }
+
+   var.key = "atari800_internalbasic";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "enabled") == 0)
+	 {
+	   Atari800_disable_basic = FALSE;
+	 }
+       else if (strcmp(var.value, "disabled") == 0)
+	 {
+	   Atari800_disable_basic = TRUE;
+	 }
+     }
+
+   var.key = "atari800_sioaccel";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "enabled") == 0)
+	 {
+	   ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = TRUE;
+	 }
+       else if (strcmp(var.value, "disabled") == 0)
+	 {
+	   ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = FALSE;	   
+	 }
+     }
+
+   var.key = "atari800_cassboot";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "enabled") == 0)
+	 {
+	   CASSETTE_hold_start=1;
+	 }
+       else if (strcmp(var.value, "disabled") == 0)
+	 {
+	   CASSETTE_hold_start=0;
+	 }
+     }
+   
 }
 
 static void retro_wrap_emulator()
