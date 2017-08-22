@@ -229,11 +229,11 @@ static void update_variables(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
      {
-       if (strcmp(var.value, "enabled") == 0)
+       if (strcmp(var.value, "NTSC") == 0)
 	 {
 	   Atari800_tv_mode = Atari800_TV_NTSC;
 	 }
-       else if (strcmp(var.value, "disabled") == 0)
+       else if (strcmp(var.value, "PAL") == 0)
 	 {
 	   Atari800_tv_mode = Atari800_TV_PAL;
 	 }
