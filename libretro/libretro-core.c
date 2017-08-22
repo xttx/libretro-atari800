@@ -76,7 +76,26 @@ void retro_set_environment(retro_environment_t cb)
   cb( RETRO_ENVIRONMENT_SET_CONTROLLER_INFO, (void*)ports );
 
    struct retro_variable variables[] = {
-
+     {
+       "atari800_system",
+       "Atari System; 400/800 (OS B)|800XL (64K)|130XE (128K)|5200",
+     },
+     {
+       "atari800_ntscpal",
+       "Video Standard; NTSC|PAL",
+     },
+     {
+       "atari800_internalbasic",
+       "Internal BASIC (hold OPTION on boot); disabled|enabled",
+     },
+     {
+       "atari800_sioaccel",
+       "SIO Acceleration; disabled|enabled",
+     },
+     {
+       "atari800_cassboot",
+       "Boot from Cassette; disabled|enabled",
+     },
 	  { 
 		"atari800_opt1",
 		"Autodetect A5200 CartType; disabled|enabled" ,
