@@ -6,6 +6,7 @@
 #include "esc.h"
 #include "memory.h"
 #include "cassette.h"
+#include "artifact.h"
 
 cothread_t mainThread;
 cothread_t emuThread;
@@ -100,6 +101,10 @@ void retro_set_environment(retro_environment_t cb)
      {
        "atari800_cassboot",
        "Boot from Cassette; disabled|enabled",
+     },
+     {
+       "atari800_artifacting",
+       "Hi-Res Artifacting; disabled|enabled",
      },
 	  { 
 		"atari800_opt1",
@@ -287,6 +292,39 @@ static void update_variables(void)
 	 {
 	   CASSETTE_hold_start=0;
 	   Atari800_InitialiseMachine();
+	 }
+     }
+
+   var.key = "atari800_artifacting";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "enabled") == 0)
+	 {
+	   if (Atari800_tv_mode == Atari800_TV_NTSC)
+	     {
+	       ARTIFACT_Set(ARTIFACT_NTSC_NEW);
+	       ARTIFACT_SetTVMode(Atari800_TV_NTSC);
+	     }
+	   else if (Atari800_tv_mode == Atari800_TV_PAL)
+	     {
+	       ARTIFACT_Set(ARTIFACT_PAL_BLEND);
+	       ARTIFACT_SetTVMode(Atari800_TV_PAL);
+	     }
+	 }
+       else if (strcmp(var.value, "disabled") == 0)
+	 {
+	   if (Atari800_tv_mode == Atari800_TV_NTSC)
+	     {
+	       ARTIFACT_Set(ARTIFACT_NONE);
+	       ARTIFACT_SetTVMode(Atari800_TV_NTSC);
+	     }
+	   else if (Atari800_tv_mode == Atari800_TV_PAL)
+	     {
+	       ARTIFACT_Set(ARTIFACT_NONE);
+	       ARTIFACT_SetTVMode(Atari800_TV_PAL);
+	     }	   
 	 }
      }
    
