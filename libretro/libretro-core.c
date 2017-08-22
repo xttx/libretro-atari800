@@ -160,7 +160,7 @@ static void update_variables(void)
       if (pch)
          retroh = strtoul(pch, NULL, 0);
 
-      fprintf(stderr, "[libretro-vice]: Got size: %u x %u.\n", retrow, retroh);
+      fprintf(stderr, "[libretro-atari800]: Got size: %u x %u.\n", retrow, retroh);
 
       CROP_WIDTH =retrow;
       CROP_HEIGHT= (retroh-80);
@@ -184,6 +184,7 @@ static void update_variables(void)
 	   Atari800_jumper = FALSE;
 	   Atari800_builtin_game = FALSE;
 	   Atari800_keyboard_detached = FALSE;
+	   Atari800_InitialiseMachine();
 	 }
        else if (strcmp(var.value, "800XL (64K)") == 0)
 	 {
@@ -195,6 +196,7 @@ static void update_variables(void)
 	   Atari800_jumper = FALSE;
 	   Atari800_builtin_game = FALSE;
 	   Atari800_keyboard_detached = FALSE;
+	   Atari800_InitialiseMachine();
 	 }
        else if (strcmp(var.value, "130XE (128K)") == 0)
 	 {
@@ -206,6 +208,7 @@ static void update_variables(void)
 	   Atari800_jumper = FALSE;
 	   Atari800_builtin_game = FALSE;
 	   Atari800_keyboard_detached = FALSE;
+	   Atari800_InitialiseMachine();
 	 }
        else if (strcmp(var.value, "5200") == 0)
 	 {
@@ -217,6 +220,7 @@ static void update_variables(void)
 	   Atari800_jumper = FALSE;
 	   Atari800_builtin_game = FALSE;
 	   Atari800_keyboard_detached = FALSE;
+	   Atari800_InitialiseMachine();
 	 }
      }
    
@@ -243,10 +247,12 @@ static void update_variables(void)
        if (strcmp(var.value, "enabled") == 0)
 	 {
 	   Atari800_disable_basic = FALSE;
+	   Atari800_InitialiseMachine();
 	 }
        else if (strcmp(var.value, "disabled") == 0)
 	 {
 	   Atari800_disable_basic = TRUE;
+	   Atari800_InitialiseMachine();
 	 }
      }
 
@@ -258,10 +264,12 @@ static void update_variables(void)
        if (strcmp(var.value, "enabled") == 0)
 	 {
 	   ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = TRUE;
+	   Atari800_InitialiseMachine();
 	 }
        else if (strcmp(var.value, "disabled") == 0)
 	 {
-	   ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = FALSE;	   
+	   ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = FALSE;
+	   Atari800_InitialiseMachine();
 	 }
      }
 
@@ -273,10 +281,12 @@ static void update_variables(void)
        if (strcmp(var.value, "enabled") == 0)
 	 {
 	   CASSETTE_hold_start=1;
+	   Atari800_InitialiseMachine();
 	 }
        else if (strcmp(var.value, "disabled") == 0)
 	 {
 	   CASSETTE_hold_start=0;
+	   Atari800_InitialiseMachine();
 	 }
      }
    
