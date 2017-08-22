@@ -2,6 +2,9 @@
 
 #include "libretro-core.h"
 #include "atari.h"
+#include "devices.h"
+#include "esc.h"
+#include "memory.h"
 
 cothread_t mainThread;
 cothread_t emuThread;
