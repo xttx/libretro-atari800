@@ -309,7 +309,7 @@ static void update_variables(void)
 	     }
 	   else if (Atari800_tv_mode == Atari800_TV_PAL)
 	     {
-	       ARTIFACT_Set(ARTIFACT_PAL_BLEND);
+	       ARTIFACT_Set(ARTIFACT_NONE); // PAL Blending has been flipped off in config for now.
 	       ARTIFACT_SetTVMode(Atari800_TV_PAL);
 	     }
 	 }
