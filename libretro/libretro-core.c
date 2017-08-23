@@ -1,6 +1,12 @@
 #include "libretro.h"
 
 #include "libretro-core.h"
+#include "atari.h"
+#include "devices.h"
+#include "esc.h"
+#include "memory.h"
+#include "cassette.h"
+#include "artifact.h"
 
 cothread_t mainThread;
 cothread_t emuThread;
@@ -76,7 +82,30 @@ void retro_set_environment(retro_environment_t cb)
   cb( RETRO_ENVIRONMENT_SET_CONTROLLER_INFO, (void*)ports );
 
    struct retro_variable variables[] = {
-
+     {
+       "atari800_system",
+       "Atari System; 400/800 (OS B)|800XL (64K)|130XE (128K)|5200",
+     },
+     {
+       "atari800_ntscpal",
+       "Video Standard; NTSC|PAL",
+     },
+     {
+       "atari800_internalbasic",
+       "Internal BASIC (hold OPTION on boot); disabled|enabled",
+     },
+     {
+       "atari800_sioaccel",
+       "SIO Acceleration; disabled|enabled",
+     },
+     {
+       "atari800_cassboot",
+       "Boot from Cassette; disabled|enabled",
+     },
+     {
+       "atari800_artifacting",
+       "Hi-Res Artifacting; disabled|enabled",
+     },
 	  { 
 		"atari800_opt1",
 		"Autodetect A5200 CartType; disabled|enabled" ,
@@ -136,7 +165,7 @@ static void update_variables(void)
       if (pch)
          retroh = strtoul(pch, NULL, 0);
 
-      fprintf(stderr, "[libretro-vice]: Got size: %u x %u.\n", retrow, retroh);
+      fprintf(stderr, "[libretro-atari800]: Got size: %u x %u.\n", retrow, retroh);
 
       CROP_WIDTH =retrow;
       CROP_HEIGHT= (retroh-80);
@@ -144,8 +173,161 @@ static void update_variables(void)
       texture_init();
       //reset_screen();
    }
-  
 
+   var.key = "atari800_system";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "400/800 (OS B)") == 0)
+	 {
+	   Atari800_machine_type = Atari800_MACHINE_800;
+	   MEMORY_ram_size = 48;
+	   Atari800_builtin_basic = FALSE;
+	   Atari800_keyboard_leds = FALSE;
+	   Atari800_f_keys = FALSE;
+	   Atari800_jumper = FALSE;
+	   Atari800_builtin_game = FALSE;
+	   Atari800_keyboard_detached = FALSE;
+	   Atari800_InitialiseMachine();
+	 }
+       else if (strcmp(var.value, "800XL (64K)") == 0)
+	 {
+	   Atari800_machine_type = Atari800_MACHINE_XLXE;
+	   MEMORY_ram_size = 64;
+	   Atari800_builtin_basic = TRUE;
+	   Atari800_keyboard_leds = FALSE;
+	   Atari800_f_keys = FALSE;
+	   Atari800_jumper = FALSE;
+	   Atari800_builtin_game = FALSE;
+	   Atari800_keyboard_detached = FALSE;
+	   Atari800_InitialiseMachine();
+	 }
+       else if (strcmp(var.value, "130XE (128K)") == 0)
+	 {
+	   Atari800_machine_type = Atari800_MACHINE_XLXE;
+	   MEMORY_ram_size = 128;
+	   Atari800_builtin_basic = TRUE;
+	   Atari800_keyboard_leds = FALSE;
+	   Atari800_f_keys = FALSE;
+	   Atari800_jumper = FALSE;
+	   Atari800_builtin_game = FALSE;
+	   Atari800_keyboard_detached = FALSE;
+	   Atari800_InitialiseMachine();
+	 }
+       else if (strcmp(var.value, "5200") == 0)
+	 {
+	   Atari800_machine_type = Atari800_MACHINE_5200;
+	   MEMORY_ram_size = 16;
+	   Atari800_builtin_basic = FALSE;
+	   Atari800_keyboard_leds = FALSE;
+	   Atari800_f_keys = FALSE;
+	   Atari800_jumper = FALSE;
+	   Atari800_builtin_game = FALSE;
+	   Atari800_keyboard_detached = FALSE;
+	   Atari800_InitialiseMachine();
+	 }
+     }
+   
+   var.key = "atari800_ntscpal";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "NTSC") == 0)
+	 {
+	   Atari800_tv_mode = Atari800_TV_NTSC;
+	 }
+       else if (strcmp(var.value, "PAL") == 0)
+	 {
+	   Atari800_tv_mode = Atari800_TV_PAL;
+	 }
+     }
+
+   var.key = "atari800_internalbasic";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "enabled") == 0)
+	 {
+	   Atari800_disable_basic = FALSE;
+	   Atari800_InitialiseMachine();
+	 }
+       else if (strcmp(var.value, "disabled") == 0)
+	 {
+	   Atari800_disable_basic = TRUE;
+	   Atari800_InitialiseMachine();
+	 }
+     }
+
+   var.key = "atari800_sioaccel";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "enabled") == 0)
+	 {
+	   ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = TRUE;
+	   Atari800_InitialiseMachine();
+	 }
+       else if (strcmp(var.value, "disabled") == 0)
+	 {
+	   ESC_enable_sio_patch = Devices_enable_h_patch = Devices_enable_p_patch = Devices_enable_r_patch = FALSE;
+	   Atari800_InitialiseMachine();
+	 }
+     }
+
+   var.key = "atari800_cassboot";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "enabled") == 0)
+	 {
+	   CASSETTE_hold_start=1;
+	   Atari800_InitialiseMachine();
+	 }
+       else if (strcmp(var.value, "disabled") == 0)
+	 {
+	   CASSETTE_hold_start=0;
+	   Atari800_InitialiseMachine();
+	 }
+     }
+
+   var.key = "atari800_artifacting";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+     {
+       if (strcmp(var.value, "enabled") == 0)
+	 {
+	   if (Atari800_tv_mode == Atari800_TV_NTSC)
+	     {
+	       ARTIFACT_Set(ARTIFACT_NTSC_OLD);
+	       ARTIFACT_SetTVMode(Atari800_TV_NTSC);
+	     }
+	   else if (Atari800_tv_mode == Atari800_TV_PAL)
+	     {
+	       ARTIFACT_Set(ARTIFACT_NONE); // PAL Blending has been flipped off in config for now.
+	       ARTIFACT_SetTVMode(Atari800_TV_PAL);
+	     }
+	 }
+       else if (strcmp(var.value, "disabled") == 0)
+	 {
+	   if (Atari800_tv_mode == Atari800_TV_NTSC)
+	     {
+	       ARTIFACT_Set(ARTIFACT_NONE);
+	       ARTIFACT_SetTVMode(Atari800_TV_NTSC);
+	     }
+	   else if (Atari800_tv_mode == Atari800_TV_PAL)
+	     {
+	       ARTIFACT_Set(ARTIFACT_NONE);
+	       ARTIFACT_SetTVMode(Atari800_TV_PAL);
+	     }	   
+	 }
+     }
+   
 }
 
 static void retro_wrap_emulator()
