@@ -1,4 +1,4 @@
-/* Copyright  (C) 2010-2017 The RetroArch team
+/* Copyright  (C) 2010-2016 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
  * The following license statement only applies to this file (retro_common_api.h).
@@ -76,17 +76,17 @@ typedef int ssize_t;
 #endif
 
 #ifdef _WIN32
-#define STRING_REP_INT64  "%I64d"
+#define STRING_REP_INT64  "%I64u"
 #define STRING_REP_UINT64 "%I64u"
-#define STRING_REP_USIZE  "%Iu"
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L && !defined(VITA) && !defined(WIIU)
-#define STRING_REP_INT64  "%lld"
+#define STRING_REP_ULONG  "%Iu"
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L
+#define STRING_REP_INT64  "%llu"
 #define STRING_REP_UINT64 "%llu"
-#define STRING_REP_USIZE  "%zu"
+#define STRING_REP_ULONG  "%zu"
 #else
-#define STRING_REP_INT64  "%lld"
+#define STRING_REP_INT64  "%llu"
 #define STRING_REP_UINT64 "%llu"
-#define STRING_REP_USIZE  "%lu"
+#define STRING_REP_ULONG  "%lu"
 #endif
 
 /*

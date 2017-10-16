@@ -31,7 +31,7 @@
 #define WINDOW_WIDTH 400
 #define WINDOW_HEIGHT 300
 
-#include "libco/libco.h"
+#include "libco.h"
 
 extern cothread_t mainThread;
 extern cothread_t emuThread;

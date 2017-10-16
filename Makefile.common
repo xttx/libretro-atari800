@@ -1,14 +1,20 @@
+LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro/libretro-common
+
 INCFLAGS := -I$(CORE_DIR) \
             -I$(CORE_DIR)/atari800/src \
             -I$(CORE_DIR)/libretro  \
-            -I$(CORE_DIR)/libretro/libco 
+            -I$(LIBRETRO_COMM_DIR)/include
 
 ifeq ($(STATIC_LINKING), 1)
 INCFLAGS += -I$(CORE_DIR)/libretro/include
 endif
 
 SOURCES_C := \
-	$(CORE_DIR)/libretro/libco/libco.c
+	$(LIBRETRO_COMM_DIR)/libco/libco.c
+
+SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
+	$(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
+	$(LIBRETRO_COMM_DIR)/file/file_path.c 
 
 SOURCES_C += \
 	$(CORE_DIR)/libretro/libretro-core.c \

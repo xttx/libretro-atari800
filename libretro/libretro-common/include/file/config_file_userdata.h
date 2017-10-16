@@ -1,7 +1,7 @@
 /* Copyright  (C) 2010-2017 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
- * The following license statement only applies to this file (libco.h).
+ * The following license statement only applies to this file (config_file_userdata.h).
  * ---------------------------------------------------------------------------------------
  *
  * Permission is hereby granted, free of charge,
@@ -20,60 +20,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef LIBCO_H
-#define LIBCO_H
+#ifndef _LIBRETRO_SDK_CONFIG_FILE_USERDATA_H
+#define _LIBRETRO_SDK_CONFIG_FILE_USERDATA_H
+
+#include <string.h>
+
+#include <file/config_file.h>
 
 #include <retro_common_api.h>
 
-#ifdef LIBCO_C
-  #ifdef LIBCO_MP
-    #define thread_local __thread
-  #else
-    #define thread_local
-  #endif
-#endif
-
 RETRO_BEGIN_DECLS
 
-typedef void* cothread_t;
+struct config_file_userdata
+{
+   config_file_t *conf;
+   const char *prefix[2];
+};
 
-/**
- * co_active:
- *
- * Gets the currently active context.
- *
- * Returns: active context.
- **/
-cothread_t co_active(void);
+int config_userdata_get_float(void *userdata, const char *key_str,
+      float *value, float default_value);
 
-/**
- * co_create:
- * @int                : stack size
- * @funcptr            : thread entry function callback
- *
- * Create a co_thread.
- *
- * Returns: cothread if successful, otherwise NULL.
- */
-cothread_t co_create(unsigned int, void (*)(void));
+int config_userdata_get_int(void *userdata, const char *key_str,
+      int *value, int default_value);
 
-/**
- * co_delete:
- * @cothread           : cothread object
- *
- * Frees a co_thread.
- */
-void co_delete(cothread_t cothread);
+int config_userdata_get_float_array(void *userdata, const char *key_str,
+      float **values, unsigned *out_num_values,
+      const float *default_values, unsigned num_default_values);
 
-/**
- * co_switch:
- * @cothread           : cothread object to switch to
- *
- * Do a context switch to @cothread.
- */
-void co_switch(cothread_t cothread);
+int config_userdata_get_int_array(void *userdata, const char *key_str,
+      int **values, unsigned *out_num_values,
+      const int *default_values, unsigned num_default_values);
+
+int config_userdata_get_string(void *userdata, const char *key_str,
+      char **output, const char *default_output);
+
+void config_userdata_free(void *ptr);
 
 RETRO_END_DECLS
 
-/* ifndef LIBCO_H */
 #endif

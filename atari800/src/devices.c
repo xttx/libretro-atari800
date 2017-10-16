@@ -432,9 +432,15 @@ static int Devices_MakeDirectory(const char *filename)
 #define DO_MKDIR
 
 #elif defined(HAVE_MKDIR)
-
+#ifdef __LIBRETRO__
+#include <file/file_path.h>
+#endif
 static int Devices_MakeDirectory(const char *filename)
 {
+#ifdef __LIBRETRO__
+	return path_mkdir(filename)==1;
+#else
+
 #ifdef __WIN32__
 #define MKDIR_TAKES_ONE_ARG 1
 #endif
@@ -443,6 +449,8 @@ static int Devices_MakeDirectory(const char *filename)
 		, 0777
 #endif
 		) == 0;
+
+#endif
 }
 
 #define DO_MKDIR
