@@ -176,6 +176,15 @@ else ifeq ($(platform), psp1)
 	HAVE_COMPAT = 1
 	EXTRA_INCLUDES := -I$(shell psp-config --pspsdk-path)/include
 
+# Vita
+else ifeq ($(platform), vita)
+	EXT=a
+   TARGET := $(TARGET_NAME)_libretro_$(platform).$(EXT)
+	CC = arm-vita-eabi-gcc$(EXE_EXT)
+	AR = arm-vita-eabi-ar$(EXE_EXT)
+   PLATFORM_DEFINES := -DVITA
+   STATIC_LINKING = 1
+
 # Xbox 360
 else ifeq ($(platform), xenon)
 	TARGET := $(TARGET_NAME)_libretro_xenon360.a
