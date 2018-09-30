@@ -176,6 +176,19 @@ else ifeq ($(platform), psp1)
 	HAVE_COMPAT = 1
 	EXTRA_INCLUDES := -I$(shell psp-config --pspsdk-path)/include
 
+# CTR (3DS)
+else ifeq ($(platform), ctr)
+	EXT=a
+	TARGET := $(TARGET_NAME)_libretro_$(platform).$(EXT)
+	CC = $(DEVKITARM)/bin/arm-none-eabi-gcc$(EXE_EXT)
+	AR = $(DEVKITARM)/bin/arm-none-eabi-ar$(EXE_EXT)
+	CFLAGS += -DARM11 -D_3DS
+	CFLAGS += -march=armv6k -mtune=mpcore -mfloat-abi=hard
+	CFLAGS += -Wall -mword-relocations
+	CFLAGS += -fomit-frame-pointer -ffast-math
+   CFLAGS += -D_3DS
+   STATIC_LINKING=1
+
 # Vita
 else ifeq ($(platform), vita)
 	EXT=a
