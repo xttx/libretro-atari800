@@ -387,26 +387,26 @@ void Process_key()
 				if(i==RETROK_F12){
 					continue;
 				}
-
+*/
 				if(i==RETROK_RCTRL){
-					//CTRLON=-CTRLON;
+					CTRLON=-CTRLON;
 					printf("Modifier crtl pressed %d \n",CTRLON); 
 					continue;
 				}
 				if(i==RETROK_RSHIFT){
-					//SHITFON=-SHITFON;
+					SHIFTON=-SHIFTON;
 					printf("Modifier shift pressed %d \n",SHIFTON); 
 					continue;
 				}
 
 				if(i==RETROK_LALT){
-					//KBMOD=-KBMOD;
+					KBMOD=-KBMOD;
 					printf("Modifier alt pressed %d \n",KBMOD); 
 					continue;
 				}
 				//printf("press: %d \n",i);
 				//retro_key_down(i);
-*/	
+	
         	}	
         	else if ( !Key_Sate[i] && Key_Sate[i]!=old_Key_Sate[i]  )
         	{
@@ -414,7 +414,7 @@ void Process_key()
 				if(i==RETROK_F12){
  					continue;
 				}
-
+*/
 				if(i==RETROK_RCTRL){
 					CTRLON=-CTRLON;
 					printf("Modifier crtl released %d \n",CTRLON); 
@@ -427,11 +427,11 @@ void Process_key()
 				}
 
 				if(i==RETROK_LALT){
-//					KBMOD=-KBMOD;
+					KBMOD=-KBMOD;
 					printf("Modifier alt released %d \n",KBMOD); 
 					continue;
 				}
-*/
+
 				//printf("release: %d \n",i);
 				//retro_key_up(i);
 	

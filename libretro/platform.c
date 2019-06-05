@@ -423,111 +423,145 @@ int PLATFORM_Keyboard(void)
 			return AKEY_CTRL_8|shiftctrl;
 		if (Key_Sate[RETROK_9])	
 			return AKEY_CTRL_9|shiftctrl;
+
+		if (Key_Sate[RETROK_a])return AKEY_CTRL_a;
+		if (Key_Sate[RETROK_b])return AKEY_CTRL_b;
+		if (Key_Sate[RETROK_c])return AKEY_CTRL_c;
+		if (Key_Sate[RETROK_d])return AKEY_CTRL_d;
+		if (Key_Sate[RETROK_e])return AKEY_CTRL_e;
+		if (Key_Sate[RETROK_f])return AKEY_CTRL_f;
+		if (Key_Sate[RETROK_g])return AKEY_CTRL_g;
+		if (Key_Sate[RETROK_h])return AKEY_CTRL_h;
+		if (Key_Sate[RETROK_i])return AKEY_CTRL_i;
+		if (Key_Sate[RETROK_j])return AKEY_CTRL_j;
+		if (Key_Sate[RETROK_k])return AKEY_CTRL_k;
+		if (Key_Sate[RETROK_l])return AKEY_CTRL_l;
+		if (Key_Sate[RETROK_m])return AKEY_CTRL_m;
+		if (Key_Sate[RETROK_n])return AKEY_CTRL_n;
+		if (Key_Sate[RETROK_o])return AKEY_CTRL_o;
+		if (Key_Sate[RETROK_p])return AKEY_CTRL_p;
+		if (Key_Sate[RETROK_q])return AKEY_CTRL_q;
+		if (Key_Sate[RETROK_r])return AKEY_CTRL_r;
+		if (Key_Sate[RETROK_s])return AKEY_CTRL_s;
+		if (Key_Sate[RETROK_t])return AKEY_CTRL_t;
+		if (Key_Sate[RETROK_u])return AKEY_CTRL_u;
+		if (Key_Sate[RETROK_v])return AKEY_CTRL_v;
+		if (Key_Sate[RETROK_w])return AKEY_CTRL_w;
+		if (Key_Sate[RETROK_x])return AKEY_CTRL_x;
+		if (Key_Sate[RETROK_y])return AKEY_CTRL_y;
+		if (Key_Sate[RETROK_z])return AKEY_CTRL_z;
+
+		/* these three keys also type control-graphics characters, but
+		   there don't seem to be AKEY_ values for them! */
+		if (Key_Sate[RETROK_COMMA])return (AKEY_CTRL | AKEY_COMMA);
+		if (Key_Sate[RETROK_PERIOD])return (AKEY_CTRL | AKEY_FULLSTOP);
+		if (Key_Sate[RETROK_SEMICOLON])return (AKEY_CTRL | AKEY_SEMICOLON);
+
 	}
 
+	/* handle all keys */
 
-	/* FIXME handle all keys */
+	if (INPUT_key_shift) {
+		if (Key_Sate[RETROK_a])return AKEY_A;
+		if (Key_Sate[RETROK_b])return AKEY_B;
+		if (Key_Sate[RETROK_c])return AKEY_C;
+		if (Key_Sate[RETROK_d])return AKEY_D;
+		if (Key_Sate[RETROK_e])return AKEY_E;
+		if (Key_Sate[RETROK_f])return AKEY_F;
+		if (Key_Sate[RETROK_g])return AKEY_G;
+		if (Key_Sate[RETROK_h])return AKEY_H;
+		if (Key_Sate[RETROK_i])return AKEY_I;
+		if (Key_Sate[RETROK_j])return AKEY_J;
+		if (Key_Sate[RETROK_k])return AKEY_K;
+		if (Key_Sate[RETROK_l])return AKEY_L;
+		if (Key_Sate[RETROK_m])return AKEY_M;
+		if (Key_Sate[RETROK_n])return AKEY_N;
+		if (Key_Sate[RETROK_o])return AKEY_O;
+		if (Key_Sate[RETROK_p])return AKEY_P;
+		if (Key_Sate[RETROK_q])return AKEY_Q;
+		if (Key_Sate[RETROK_r])return AKEY_R;
+		if (Key_Sate[RETROK_s])return AKEY_S;
+		if (Key_Sate[RETROK_t])return AKEY_T;
+		if (Key_Sate[RETROK_u])return AKEY_U;
+		if (Key_Sate[RETROK_v])return AKEY_V;
+		if (Key_Sate[RETROK_w])return AKEY_W;
+		if (Key_Sate[RETROK_x])return AKEY_X;
+		if (Key_Sate[RETROK_y])return AKEY_Y;
+		if (Key_Sate[RETROK_z])return AKEY_Z;
 
-	if (Key_Sate[RETROK_a])return AKEY_A;
-	if (Key_Sate[RETROK_b])return AKEY_B;
-	if (Key_Sate[RETROK_c])return AKEY_C;
-	if (Key_Sate[RETROK_d])return AKEY_D;
-	if (Key_Sate[RETROK_e])return AKEY_E;
-	if (Key_Sate[RETROK_f])return AKEY_F;
-	if (Key_Sate[RETROK_g])return AKEY_G;
-	if (Key_Sate[RETROK_h])return AKEY_H;
-	if (Key_Sate[RETROK_i])return AKEY_I;
-	if (Key_Sate[RETROK_j])return AKEY_J;
-	if (Key_Sate[RETROK_k])return AKEY_K;
-	if (Key_Sate[RETROK_l])return AKEY_L;
-	if (Key_Sate[RETROK_m])return AKEY_M;
-	if (Key_Sate[RETROK_n])return AKEY_N;
-	if (Key_Sate[RETROK_o])return AKEY_O;
-	if (Key_Sate[RETROK_p])return AKEY_P;
-	if (Key_Sate[RETROK_q])return AKEY_Q;
-	if (Key_Sate[RETROK_r])return AKEY_R;
-	if (Key_Sate[RETROK_s])return AKEY_S;
-	if (Key_Sate[RETROK_t])return AKEY_T;
-	if (Key_Sate[RETROK_u])return AKEY_U;
-	if (Key_Sate[RETROK_v])return AKEY_V;
-	if (Key_Sate[RETROK_w])return AKEY_W;
-	if (Key_Sate[RETROK_x])return AKEY_X;
-	if (Key_Sate[RETROK_y])return AKEY_Y;
-	if (Key_Sate[RETROK_z])return AKEY_Z;
+		if (Key_Sate[RETROK_1])return AKEY_EXCLAMATION;
+		if (Key_Sate[RETROK_2])return AKEY_AT;
+		if (Key_Sate[RETROK_3])return AKEY_HASH;
+		if (Key_Sate[RETROK_4])return AKEY_DOLLAR;
+		if (Key_Sate[RETROK_5])return AKEY_PERCENT;
+		if (Key_Sate[RETROK_6])return AKEY_CARET;
+		if (Key_Sate[RETROK_7])return AKEY_AMPERSAND;
+		if (Key_Sate[RETROK_8])return AKEY_ASTERISK;
+		if (Key_Sate[RETROK_9])return AKEY_PARENLEFT;
+		if (Key_Sate[RETROK_0])return AKEY_PARENRIGHT;
 
-	if (Key_Sate[RETROK_0])return AKEY_0;
-	if (Key_Sate[RETROK_1])return AKEY_1;
-	if (Key_Sate[RETROK_2])return AKEY_2;
-	if (Key_Sate[RETROK_3])return AKEY_3;
-	if (Key_Sate[RETROK_4])return AKEY_4;
-	if (Key_Sate[RETROK_5])return AKEY_5;
-	if (Key_Sate[RETROK_6])return AKEY_6;
-	if (Key_Sate[RETROK_7])return AKEY_7;
-	if (Key_Sate[RETROK_8])return AKEY_8;
-	if (Key_Sate[RETROK_9])return AKEY_9;
+		if (Key_Sate[RETROK_BACKSLASH])return AKEY_BAR;
+		if (Key_Sate[RETROK_COMMA])return AKEY_LESS;
+		if (Key_Sate[RETROK_PERIOD])return AKEY_GREATER;
+		if (Key_Sate[RETROK_MINUS])return AKEY_UNDERSCORE;
+		if (Key_Sate[RETROK_EQUALS])return AKEY_PLUS;
+		if (Key_Sate[RETROK_LEFTBRACKET])return AKEY_BRACKETLEFT; // no curly braces on Atari
+		if (Key_Sate[RETROK_RIGHTBRACKET])return AKEY_BRACKETRIGHT; // no curly braces on Atari
+		if (Key_Sate[RETROK_SEMICOLON])return AKEY_COLON;
+		if (Key_Sate[RETROK_QUOTE])return AKEY_DBLQUOTE;
+		if (Key_Sate[RETROK_SLASH])return AKEY_QUESTION;
 
-//	if (Key_Sate[RETROK_SPACE])return AKEY_SPACE;
-//	if (Key_Sate[RETROK_BACKQUOTE])return AKEY_NONE; //???
-	if (Key_Sate[RETROK_BACKSLASH])return AKEY_BACKSLASH;
-	if (Key_Sate[RETROK_COMMA])return AKEY_COMMA;
-	if (Key_Sate[RETROK_PERIOD])return AKEY_FULLSTOP;
-	if (Key_Sate[RETROK_MINUS])return AKEY_MINUS;
-	if (Key_Sate[RETROK_EQUALS])return AKEY_EQUAL;
-	if (Key_Sate[RETROK_LEFTBRACKET])return AKEY_BRACKETLEFT;
-	if (Key_Sate[RETROK_RIGHTBRACKET])return AKEY_BRACKETRIGHT;
-	if (Key_Sate[RETROK_SEMICOLON])return AKEY_SEMICOLON;
-	if (Key_Sate[RETROK_QUOTE])return AKEY_QUOTE;
-	if (Key_Sate[RETROK_SLASH])return AKEY_SLASH;
+	} else {
+		if (Key_Sate[RETROK_a])return AKEY_a;
+		if (Key_Sate[RETROK_b])return AKEY_b;
+		if (Key_Sate[RETROK_c])return AKEY_c;
+		if (Key_Sate[RETROK_d])return AKEY_d;
+		if (Key_Sate[RETROK_e])return AKEY_e;
+		if (Key_Sate[RETROK_f])return AKEY_f;
+		if (Key_Sate[RETROK_g])return AKEY_g;
+		if (Key_Sate[RETROK_h])return AKEY_h;
+		if (Key_Sate[RETROK_i])return AKEY_i;
+		if (Key_Sate[RETROK_j])return AKEY_j;
+		if (Key_Sate[RETROK_k])return AKEY_k;
+		if (Key_Sate[RETROK_l])return AKEY_l;
+		if (Key_Sate[RETROK_m])return AKEY_m;
+		if (Key_Sate[RETROK_n])return AKEY_n;
+		if (Key_Sate[RETROK_o])return AKEY_o;
+		if (Key_Sate[RETROK_p])return AKEY_p;
+		if (Key_Sate[RETROK_q])return AKEY_q;
+		if (Key_Sate[RETROK_r])return AKEY_r;
+		if (Key_Sate[RETROK_s])return AKEY_s;
+		if (Key_Sate[RETROK_t])return AKEY_t;
+		if (Key_Sate[RETROK_u])return AKEY_u;
+		if (Key_Sate[RETROK_v])return AKEY_v;
+		if (Key_Sate[RETROK_w])return AKEY_w;
+		if (Key_Sate[RETROK_x])return AKEY_x;
+		if (Key_Sate[RETROK_y])return AKEY_y;
+		if (Key_Sate[RETROK_z])return AKEY_z;
 
-//	if (Key_Sate[RETROK_ESCAPE])return AKEY_ESCAPE;
-//	if (Key_Sate[RETROK_RETURN])return AKEY_RETURN;
-//	if (Key_Sate[RETROK_BACKSPACE])return AKEY_BACKSPACE;
-//	if (Key_Sate[RETROK_DELETE])return AKEY_DELETE_CHAR;
-//	if (Key_Sate[RETROK_INSERT])return AKEY_INSERT_CHAR;
-//	if (Key_Sate[RETROK_HOME])return AKEY_CLEAR;
-//	if (Key_Sate[RETROK_END])return AKEY_HELP;
-//	if (Key_Sate[RETROK_PAGEUP])return AKEY_F1 | AKEY_SHFT;
-//	if (Key_Sate[RETROK_PAGEDOWN])return AKEY_F2 | AKEY_SHFT;
+		if (Key_Sate[RETROK_0])return AKEY_0;
+		if (Key_Sate[RETROK_1])return AKEY_1;
+		if (Key_Sate[RETROK_2])return AKEY_2;
+		if (Key_Sate[RETROK_3])return AKEY_3;
+		if (Key_Sate[RETROK_4])return AKEY_4;
+		if (Key_Sate[RETROK_5])return AKEY_5;
+		if (Key_Sate[RETROK_6])return AKEY_6;
+		if (Key_Sate[RETROK_7])return AKEY_7;
+		if (Key_Sate[RETROK_8])return AKEY_8;
+		if (Key_Sate[RETROK_9])return AKEY_9;
 
-//	if (Key_Sate[RETROK_LCTRL])return AKEY_75;
-//	if (Key_Sate[RETROK_TAB])return AKEY_TAB;
-//	if (Key_Sate[RETROK_RCTRL])return AKEY_75;
-//	if (Key_Sate[RETROK_LSHIFT])return AKEY_17;
-//	if (Key_Sate[RETROK_RSHIFT])return AKEY_64;
-//	if (Key_Sate[RETROK_LALT])return AKEY_64;
-//	if (Key_Sate[RETROK_LMETA])return AKEY_75;
-//	if (Key_Sate[RETROK_RALT])return AKEY_64;
-//	if (Key_Sate[RETROK_RMETA])return AKEY_75;
+		if (Key_Sate[RETROK_BACKSLASH])return AKEY_BACKSLASH;
+		if (Key_Sate[RETROK_COMMA])return AKEY_COMMA;
+		if (Key_Sate[RETROK_PERIOD])return AKEY_FULLSTOP;
+		if (Key_Sate[RETROK_MINUS])return AKEY_MINUS;
+		if (Key_Sate[RETROK_EQUALS])return AKEY_EQUAL;
+		if (Key_Sate[RETROK_LEFTBRACKET])return AKEY_BRACKETLEFT;
+		if (Key_Sate[RETROK_RIGHTBRACKET])return AKEY_BRACKETRIGHT;
+		if (Key_Sate[RETROK_SEMICOLON])return AKEY_SEMICOLON;
+		if (Key_Sate[RETROK_QUOTE])return AKEY_QUOTE;
+		if (Key_Sate[RETROK_SLASH])return AKEY_SLASH;
 
-//	if (Key_Sate[RETROK_UP])return AKEY_07)| 0x80;
-//	if (Key_Sate[RETROK_DOWN])return AKEY_07;
-//	if (Key_Sate[RETROK_LEFT])return AKEY_02) | 0x80;
-//	if (Key_Sate[RETROK_RIGHT])return AKEY_02;
-
-//	if (Key_Sate[RETROK_F1])return AKEY_04;
-//	if (Key_Sate[RETROK_F2])return AKEY_04) | 0x80;
-//	if (Key_Sate[RETROK_F3])return AKEY_05;
-//	if (Key_Sate[RETROK_F4])return AKEY_05) | 0x80;
-//	if (Key_Sate[RETROK_F5])return AKEY_06;
-//	if (Key_Sate[RETROK_F6])return AKEY_06) | 0x80;
-//	if (Key_Sate[RETROK_F7])return AKEY_03;
-//	if (Key_Sate[RETROK_F8])return AKEY_03) | 0x80;
-/*
-	if (Key_Sate[RETROK_KP0]
-	if (Key_Sate[RETROK_KP5])return AKEY_03);
-	if (Key_Sate[RETROK_KP1])return AKEY_03);
-	if (Key_Sate[RETROK_KP2])return AKEY_03);
-	if (Key_Sate[RETROK_KP3])return AKEY_03);
-	if (Key_Sate[RETROK_KP4])return AKEY_03);
-	if (Key_Sate[RETROK_KP6])return AKEY_03);
-	if (Key_Sate[RETROK_KP7])return AKEY_03);
-	if (Key_Sate[RETROK_KP8])return AKEY_03);
-	if (Key_Sate[RETROK_KP9])return AKEY_03);
-*/
-/*
-	if (Key_Sate[RETROK_KP_DIVIDE])return AKEY_67;
-	if (Key_Sate[RETROK_KP_ENTER])return AKEY_01;
-*/
+	}
 
 	/* FIXME joy bind */
 
