@@ -1,33 +1,61 @@
+This is an updated version of lr-atari800 to add in missing features.
+
+1) full keyboard support including the SHIFT and CTRL keys, so you can type all the characters. Useful for adventure games, programming in BASIC, etc.
+
+2) four controller support when the emulator is set to 400/800 (useful for games like M.U.L.E.) Note that only the 400/800 had four joystick ports. See http://www.atarimania.com/faq-atari-400-800-xl-xe-what-games-support-4-or-more-simultaneous-players_93.html for a list of games that support four controllers.
+
+
 WIP Libretro port of Atari800 emulator version 3.1.0
 ----------------------------------------------------
 
 In joy mode
 
 L3  NA
+
 R3  NA 
+
 L2  KEY SPACE
+
 R2  KEY ESCAPE
+
 L   CONSOL_OPTION
+
 R   TOGGLE UI
+
 SEL CONSOL_SELECT
+
 STR CONSOL_START
+
 A   FIRE1/KEY RETURN IN GUI
+
 B   KEY RETURN 
+
 X   FIRE2/KEY ESCAPE IN GUI
+
 Y   VKBD ON/OFF
 
-In Keayboard mode
+In Keyboard mode
 
 F1 MAIN GUI
+
 F2 CONSOL_OPTION
+
 F3 CONSOL_SELECT
+
 F4 CONSOL_START
+
 UP
+
 DOWN
+
 LEFT
+
 RIGHT
+
 RETURN 
+
 ESCAPE 
+
 SPACE
 
 
