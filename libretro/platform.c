@@ -49,7 +49,9 @@ extern int UI_is_active;
 static int swap_joysticks = FALSE;
 int PLATFORM_kbd_joy_0_enabled = TRUE;	/* enabled by default, doesn't hurt */
 int PLATFORM_kbd_joy_1_enabled = TRUE;//FALSE;	/* disabled, would steal normal keys */
-extern unsigned char MXjoy[2]; // joy
+int PLATFORM_kbd_joy_2_enabled = TRUE;//FALSE;	/* disabled, would steal normal keys */
+int PLATFORM_kbd_joy_3_enabled = TRUE;//FALSE;	/* disabled, would steal normal keys */
+extern unsigned char MXjoy[4]; // joy
 extern int mbt[16];
 extern int retro_sound_finalized;
 
@@ -655,10 +657,10 @@ void PLATFORM_PaletteUpdate(void)
 	retro_PaletteUpdate();
 }
 
-static void get_platform_PORT(unsigned char *s0, unsigned char *s1)
+static void get_platform_PORT(unsigned char *s0, unsigned char *s1, unsigned char *s2, unsigned char *s3)
 {
-	int stick0, stick1;
-	stick0 = stick1 = INPUT_STICK_CENTRE;
+	int stick0, stick1, stick2, stick3;
+	stick0 = stick1 = stick2 = stick3 = INPUT_STICK_CENTRE;
 
 	if (PLATFORM_kbd_joy_0_enabled) {
 		if (MXjoy[0]&0x04)
@@ -680,24 +682,47 @@ static void get_platform_PORT(unsigned char *s0, unsigned char *s1)
 			stick1 &= INPUT_STICK_FORWARD;
 		if (MXjoy[1]&0x02)
 			stick1 &= INPUT_STICK_BACK;
-
+	}
+	if (PLATFORM_kbd_joy_2_enabled) {
+		if (MXjoy[2]&0x04)
+			stick2 &= INPUT_STICK_LEFT;
+		if (MXjoy[2]&0x08)
+			stick2 &= INPUT_STICK_RIGHT;
+		if (MXjoy[2]&0x01)
+			stick2 &= INPUT_STICK_FORWARD;
+		if (MXjoy[2]&0x02)
+			stick2 &= INPUT_STICK_BACK;
+	}
+	if (PLATFORM_kbd_joy_3_enabled) {
+		if (MXjoy[3]&0x04)
+			stick3 &= INPUT_STICK_LEFT;
+		if (MXjoy[3]&0x08)
+			stick3 &= INPUT_STICK_RIGHT;
+		if (MXjoy[3]&0x01)
+			stick3 &= INPUT_STICK_FORWARD;
+		if (MXjoy[3]&0x02)
+			stick3 &= INPUT_STICK_BACK;
 	}
 
 	if (swap_joysticks) {
 		*s1 = stick0;
 		*s0 = stick1;
+		*s2 = stick2;
+		*s3 = stick3;
 	}
 	else {
 		*s0 = stick0;
 		*s1 = stick1;
+		*s2 = stick2;
+		*s3 = stick3;
 	}
 
  }
 
-static void get_platform_TRIG(unsigned char *t0, unsigned char *t1)
+static void get_platform_TRIG(unsigned char *t0, unsigned char *t1, unsigned char *t2, unsigned char *t3)
 {
-	int trig0, trig1;
-	trig0 = trig1 = 1;
+	int trig0, trig1, trig2, trig3;
+	trig0 = trig1 = trig2 = trig3 = 1;
 
 	if (PLATFORM_kbd_joy_0_enabled) {
 		trig0 = MXjoy[0]&0x80?0:1;
@@ -707,13 +732,25 @@ static void get_platform_TRIG(unsigned char *t0, unsigned char *t1)
 		trig1 = MXjoy[1]&0x80?0:1;
 	}
 
+	if (PLATFORM_kbd_joy_2_enabled) {
+		trig2 = MXjoy[2]&0x80?0:1;
+	}
+
+	if (PLATFORM_kbd_joy_3_enabled) {
+		trig3 = MXjoy[3]&0x80?0:1;
+	}
+
 	if (swap_joysticks) {
 		*t1 = trig0;
 		*t0 = trig1;
+		*t2 = trig2;
+		*t3 = trig3;
 	}
 	else {
 		*t0 = trig0;
 		*t1 = trig1;
+		*t2 = trig2;
+		*t3 = trig3;
 	}
 
 }
@@ -721,10 +758,16 @@ static void get_platform_TRIG(unsigned char *t0, unsigned char *t1)
 int PLATFORM_PORT(int num)
 {
 	if (num == 0) {
-		UBYTE a, b;
-		get_platform_PORT(&a, &b);
+		UBYTE a, b, c, d;
+		get_platform_PORT(&a, &b, &c, &d);
 
 		return (b << 4) | (a & 0x0f);
+	}
+	if (num == 1) {
+		UBYTE a, b, c, d;
+		get_platform_PORT(&a, &b, &c, &d);
+
+		return (d << 4) | (c & 0x0f);
 	}
 
 	return 0xff;
@@ -732,14 +775,18 @@ int PLATFORM_PORT(int num)
 
 int PLATFORM_TRIG(int num)
 {
-	UBYTE a, b;
-	get_platform_TRIG(&a, &b);
+	UBYTE a, b, c, d;
+	get_platform_TRIG(&a, &b, &c, &d);
 
 	switch (num) {
 	case 0:
 		return a;
 	case 1:
 		return b;
+	case 2:
+		return c;
+	case 3:
+		return d;
 	default:
 		break;
 	}
