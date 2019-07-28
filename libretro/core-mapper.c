@@ -63,7 +63,7 @@ int touch=-1; // gui mouse btn
 //JOY
 int al[2][2];//left analog1
 int ar[2][2];//right analog1
-unsigned char MXjoy[2]; // joy
+unsigned char MXjoy[4]; // joy
 
 #define JOYRANGE_UP_VALUE     -16384     /* Joystick ranges in XY */
 #define JOYRANGE_DOWN_VALUE    16383
@@ -171,7 +171,7 @@ int RSTOPON=-1;
 int CTRLON=-1;
 
 extern unsigned short int bmp[400*300];
-extern unsigned atari_devices[ 2 ];
+extern unsigned atari_devices[ 4 ];
 
 extern int UI_is_active;
 extern int CURRENT_TV;
@@ -387,55 +387,55 @@ void Process_key()
 				if(i==RETROK_F12){
 					continue;
 				}
-
+*/
 				if(i==RETROK_RCTRL){
-					//CTRLON=-CTRLON;
+					CTRLON=-CTRLON;
 					printf("Modifier crtl pressed %d \n",CTRLON); 
 					continue;
 				}
 				if(i==RETROK_RSHIFT){
-					//SHITFON=-SHITFON;
+					SHIFTON=-SHIFTON;
 					printf("Modifier shift pressed %d \n",SHIFTON); 
 					continue;
 				}
 
 				if(i==RETROK_LALT){
-					//KBMOD=-KBMOD;
-					printf("Modifier alt pressed %d \n",KBMOD); 
+					KBMOD=-KBMOD;
+					printf("Modifier alt pressed %d \n",KBMOD);
 					continue;
 				}
 				//printf("press: %d \n",i);
 				//retro_key_down(i);
-*/	
-        	}	
+
+        	}
         	else if ( !Key_Sate[i] && Key_Sate[i]!=old_Key_Sate[i]  )
         	{
 /*
 				if(i==RETROK_F12){
  					continue;
 				}
-
+*/
 				if(i==RETROK_RCTRL){
 					CTRLON=-CTRLON;
-					printf("Modifier crtl released %d \n",CTRLON); 
+					printf("Modifier crtl released %d \n",CTRLON);
 					continue;
 				}
 				if(i==RETROK_RSHIFT){
 					SHIFTON=-SHIFTON;
-					printf("Modifier shift released %d \n",SHIFTON); 
+					printf("Modifier shift released %d \n",SHIFTON);
 					continue;
 				}
 
 				if(i==RETROK_LALT){
-//					KBMOD=-KBMOD;
-					printf("Modifier alt released %d \n",KBMOD); 
+					KBMOD=-KBMOD;
+					printf("Modifier alt released %d \n",KBMOD);
 					continue;
 				}
-*/
+
 				//printf("release: %d \n",i);
 				//retro_key_up(i);
-	
-        	}	
+
+        	}
 
 	memcpy(old_Key_Sate,Key_Sate , sizeof(Key_Sate) );
 
@@ -446,9 +446,11 @@ int Retro_PollEvent()
     //   RETRO        B    Y    SLT  STA  UP   DWN  LEFT RGT  A    X    L    R    L2   R2   L3   R3
     //   INDEX        0    1    2    3    4    5    6    7    8    9    10   11   12   13   14   15
 
-   int SAVPAS=PAS;	
+   int SAVPAS=PAS;
    int i,j;
-   static int vbt[2][16]={
+   static int vbt[4][16]={
+		{0x0,0x0,0x0,0x0,0x01,0x02,0x04,0x08,0x80,0x40,0x0,0x0,0x0,0x0,0x0,0x0},
+		{0x0,0x0,0x0,0x0,0x01,0x02,0x04,0x08,0x80,0x40,0x0,0x0,0x0,0x0,0x0,0x0},
 		{0x0,0x0,0x0,0x0,0x01,0x02,0x04,0x08,0x80,0x40,0x0,0x0,0x0,0x0,0x0,0x0},
 		{0x0,0x0,0x0,0x0,0x01,0x02,0x04,0x08,0x80,0x40,0x0,0x0,0x0,0x0,0x0,0x0},
 	};
@@ -462,15 +464,16 @@ int Retro_PollEvent()
 
    if(SHOWKEY==-1 && pauseg==0)Process_key();
 
-
-	  //Joy mode
-   for(j=0;j<2;j++){
+   //Joy mode
+   for(j=0;j<4;j++){
 
       for(i=4;i<10;i++)
       {
-         if( input_state_cb(j, RETRO_DEVICE_JOYPAD, 0, i))
-            MXjoy[j] |= vbt[j][i]; // Joy press	
-		 else if( MXjoy[j]&vbt[j][i])MXjoy[j] &= ~vbt[j][i]; // Joy press
+         if( input_state_cb(j, RETRO_DEVICE_JOYPAD, 0, i)) {
+            MXjoy[j] |= vbt[j][i]; // Joy press
+	    fprintf(stderr, "[Libretro-atari800]: MXjoy press controller %u slot %u.\n", j, i);
+	}
+	 else if( MXjoy[j]&vbt[j][i])MXjoy[j] &= ~vbt[j][i]; // Joy press
       }
 
   }
@@ -505,8 +508,10 @@ int Retro_PollEvent()
    //	     0    1    2    3
    	for(i=0;i<4;i++){
 
-	   if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) && mbt[i]==0 )
+	   if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) && mbt[i]==0 ) {
 	      mbt[i]=1;
+	      fprintf(stderr, "[Libretro-atari800]: atari_devices press slot %u.\n", i);
+	   }
 	   else if ( mbt[i]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) )
 	   {
 	      mbt[i]=0;
@@ -517,8 +522,10 @@ int Retro_PollEvent()
    //        10   11   12   13   14   15
    	for(i=10;i<16;i++){
 
-	   if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) && mbt[i]==0 )
+	   if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) && mbt[i]==0 ) {
+	      fprintf(stderr, "[Libretro-atari800]: atari_devices press slot %u.\n", i);
 	      mbt[i]=1;
+	   }
 	   else if ( mbt[i]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) )
 	   {
 	      mbt[i]=0;
@@ -559,7 +566,7 @@ int Retro_PollEvent()
 
    if(mmbL==0 && mouse_l){
 
-      mmbL=1;		
+      mmbL=1;
       pushi=1;
       touch=1;
 
@@ -572,7 +579,7 @@ int Retro_PollEvent()
    }
 
    if(mmbR==0 && mouse_r){
-      mmbR=1;		
+      mmbR=1;
    }
    else if(mmbR==1 && !mouse_r) {
       mmbR=0;

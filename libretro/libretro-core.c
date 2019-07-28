@@ -20,7 +20,7 @@ int retroh=300;
 #define RETRO_DEVICE_ATARI_KEYBOARD RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_KEYBOARD, 0)
 #define RETRO_DEVICE_ATARI_JOYSTICK RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 1)
 
-unsigned atari_devices[ 2 ];
+unsigned atari_devices[ 4 ];
 
 int keyboard_type=0;
 int autorun5200=0;
@@ -72,11 +72,20 @@ void retro_set_environment(retro_environment_t cb)
     { "ATARI Joystick", RETRO_DEVICE_ATARI_JOYSTICK },
     { "ATARI Keyboard", RETRO_DEVICE_ATARI_KEYBOARD },
   };
-
+  static const struct retro_controller_description p3_controllers[] = {
+    { "ATARI Joystick", RETRO_DEVICE_ATARI_JOYSTICK },
+    { "ATARI Keyboard", RETRO_DEVICE_ATARI_KEYBOARD },
+  };
+  static const struct retro_controller_description p4_controllers[] = {
+    { "ATARI Joystick", RETRO_DEVICE_ATARI_JOYSTICK },
+    { "ATARI Keyboard", RETRO_DEVICE_ATARI_KEYBOARD },
+  };
 
   static const struct retro_controller_info ports[] = {
     { p1_controllers, 2  }, // port 1
     { p2_controllers, 2  }, // port 2
+    { p3_controllers, 2  }, // port 3
+    { p4_controllers, 2  }, // port 4
     { NULL, 0 }
   };
 
@@ -551,7 +560,7 @@ unsigned retro_api_version(void)
 
 void retro_set_controller_port_device( unsigned port, unsigned device )
 {
-  if ( port < 2 )
+  if ( port < 4 )
   {
     atari_devices[ port ] = device;
 
