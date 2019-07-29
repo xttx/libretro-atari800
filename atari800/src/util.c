@@ -51,6 +51,10 @@
 # endif
 #endif
 
+#ifdef VITA
+#include <psp2/kernel/threadmgr.h>
+#endif
+
 #include "atari.h"
 #include "platform.h"
 #include "util.h"
@@ -477,10 +481,13 @@ double Util_time(void)
 
 void Util_sleep(double s)
 {
-#ifdef WIIU
+#if defined(WIIU)
 /* no need to sleep on retroarch (we are awake) so bypass it for wiiu */ 
 return;
-#endif
+#elif defined(VITA)
+   sceKernelDelayThread(1e6 * s);
+#else
+
 #ifdef SUPPORTS_PLATFORM_SLEEP
 	PLATFORM_Sleep(s);
 #else /* !SUPPORTS_PLATFORM_SLEEP */
@@ -517,4 +524,6 @@ return;
 #endif
 	}
 #endif /* !SUPPORTS_PLATFORM_SLEEP */
+
+#endif
 }

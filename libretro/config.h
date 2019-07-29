@@ -574,3 +574,15 @@
 /* Define to empty if the keyword `volatile' does not work. Warning: valid
    code using `volatile' can become incorrect without. Disable with care. */
 /* #undef volatile */
+
+#ifdef VITA
+
+#undef HAVE_CHMOD
+
+#undef HAVE_RMDIR
+
+#undef HAVE_GETCWD
+
+#undef HAVE_NANOSLEEP
+
+#endif
