@@ -96,25 +96,45 @@ else ifneq (,$(findstring ios,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro_ios.dylib
 	fpic := -fPIC
 	SHARED := -dynamiclib
+	CFLAGS += -Wno-error=implicit-function-declaration -DHAVE_POSIX_MEMALIGN
 
 	ifeq ($(IOSSDK),)
 		IOSSDK := $(shell xcodebuild -version -sdk iphoneos Path)
 	endif
 
+ifeq ($(platform),$(filter $(platform),ios-arm64))
+	CC = cc -arch arm64 -isysroot $(IOSSDK)
+	CXX = c++ -arch arm64 -isysroot $(IOSSDK)
+else
 	CC = cc -arch armv7 -isysroot $(IOSSDK)
-	CC_AS = perl ./tools/gas-preprocessor.pl $(CC)
 	CXX = c++ -arch armv7 -isysroot $(IOSSDK)
-ifeq ($(platform),ios9)
+endif
+
+	CC_AS = perl ./tools/gas-preprocessor.pl $(CC)
+
+ifeq ($(platform),$(filter $(platform),ios9 ios-arm64))
 	CC += -miphoneos-version-min=8.0
 	CXX += -miphoneos-version-min=8.0
 	CC_AS += -miphoneos-version-min=8.0
-	PLATFORM_DEFINES := -miphoneos-version-min=8.0
+	PLATFORM_DEFINES := -miphoneos-version-min=8.0 -DIOS
 else
 	CC += -miphoneos-version-min=5.0
 	CXX += -miphoneos-version-min=5.0
 	CC_AS += -miphoneos-version-min=5.0
-	PLATFORM_DEFINES := -miphoneos-version-min=5.0
+	PLATFORM_DEFINES := -miphoneos-version-min=5.0 -DIOS
 endif
+
+# tvOS
+else ifeq ($(platform), tvos-arm64)
+
+	TARGET := $(TARGET_NAME)_libretro_tvos.dylib
+	fpic := -fPIC
+	SHARED := -dynamiclib
+	CFLAGS += -Wno-error=implicit-function-declaration -DHAVE_POSIX_MEMALIGN -DIOS
+
+	ifeq ($(IOSSDK),)
+		IOSSDK := $(shell xcodebuild -version -sdk appletvos Path)
+	endif
 
 # Theos
 else ifeq ($(platform), theos_ios)
