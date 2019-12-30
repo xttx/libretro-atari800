@@ -328,7 +328,7 @@ void retro_virtualkb(void)
 
                oldi=-1;
             }
-            else if(RETROK_LCTRL) //CTRL
+            else if(i==RETROK_LCTRL) //CTRL
             {     
                CTRLON=-CTRLON;
 
