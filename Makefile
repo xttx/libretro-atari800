@@ -261,6 +261,7 @@ else ifeq ($(platform), libnx)
    TARGET := $(TARGET_NAME)_libretro_$(platform).a
    PLATFORM_DEFINES += -D__SWITCH__ -DHAVE_LIBNX -I$(LIBNX)/include/ -specs=$(LIBNX)/switch.specs
    PLATFORM_DEFINES += -march=armv8-a -mtune=cortex-a57 -mtp=soft -mcpu=cortex-a57+crc+fp+simd
+   PLATFORM_DEFINES += -fPIC
    STATIC_LINKING=1
 
 # ARM
