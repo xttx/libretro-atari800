@@ -73,7 +73,23 @@
 
 #define SAVE_VERSION_NUMBER 8 /* Last changed after Atari800 3.1.0 */
 
-
+#if defined(MEMCOMPR)
+static gzFile *mem_open(const char *name, const char *mode);
+static int mem_close(gzFile *stream);
+static size_t mem_read(void *buf, size_t len, gzFile *stream);
+static size_t mem_write(const void *buf, size_t len, gzFile *stream);
+#define GZOPEN(X, Y)     mem_open(X, Y)
+#define GZCLOSE(X)       mem_close(X)
+#define GZREAD(X, Y, Z)  mem_read(Y, Z, X)
+#define GZWRITE(X, Y, Z) mem_write(Y, Z, X)
+#undef GZERROR
+#elif defined(HAVE_LIBZ) /* above MEMCOMPR, below HAVE_LIBZ */
+#define GZOPEN(X, Y)     gzopen(X, Y)
+#define GZCLOSE(X)       gzclose(X)
+#define GZREAD(X, Y, Z)  gzread(X, Y, Z)
+#define GZWRITE(X, Y, Z) gzwrite(X, (const voidp) Y, Z)
+#define GZERROR(X, Y)    gzerror(X, Y)
+#else
 #define GZOPEN(X, Y)     fopen(X, Y)
 #define GZCLOSE(X)       fclose(X)
 #define GZREAD(X, Y, Z)  fread(Y, Z, 1, X)
@@ -81,11 +97,10 @@
 #undef GZERROR
 #define gzFile  FILE *
 #define Z_OK    0
+#endif
 
 static gzFile StateFile = NULL;
 static int nFileError = Z_OK;
-
-
 
 static void GetGZErrorText(void)
 {
@@ -315,6 +330,8 @@ void StateSav_ReadFNAME(char *filename)
 
 int StateSav_SaveAtariState(const char *filename, const char *mode, UBYTE SaveVerbose)
 {
+	UBYTE StateVersion = SAVE_VERSION_NUMBER;
+
 	if (StateFile != NULL) {
 		GZCLOSE(StateFile);
 		StateFile = NULL;
@@ -333,56 +350,6 @@ int StateSav_SaveAtariState(const char *filename, const char *mode, UBYTE SaveVe
 		StateFile = NULL;
 		return FALSE;
 	}
-
-	if( StateSav_SaveAtariStateInternal(SaveVerbose) == FALSE )
-		return FALSE;
-
-	if (GZCLOSE(StateFile) != 0) {
-		StateFile = NULL;
-		return FALSE;
-	}
-	StateFile = NULL;
-
-	if (nFileError != Z_OK)
-		return FALSE;
-
-	return TRUE;
-}
-
-int StateSav_SaveAtariStateMem(char **data ,size_t *size)
-{
-	nFileError = Z_OK;
-
-	StateFile = open_memstream(data, size);
-	if (StateFile == NULL) {
-		GetGZErrorText();
-		return FALSE;
-	}
-	if (GZWRITE(StateFile, "ATARI800", 8) == 0) {
-		GetGZErrorText();
-		GZCLOSE(StateFile);
-		StateFile = NULL;
-		return FALSE;
-	}
-
-	StateSav_SaveAtariStateInternal(TRUE);
-
-	if (GZCLOSE(StateFile) != 0) {
-		StateFile = NULL;
-		return FALSE;
-	}
-	StateFile = NULL;
-
-	if (nFileError != Z_OK)
-		return FALSE;
-
-	return TRUE;
-}
-
-
-int StateSav_SaveAtariStateInternal(UBYTE SaveVerbose)
-{
-	UBYTE StateVersion = SAVE_VERSION_NUMBER;
 
 	StateSav_SaveUBYTE(&StateVersion, 1);
 	StateSav_SaveUBYTE(&SaveVerbose, 1);
@@ -433,11 +400,24 @@ int StateSav_SaveAtariStateInternal(UBYTE SaveVerbose)
 	DCStateSave();
 #endif
 
+	if (GZCLOSE(StateFile) != 0) {
+		StateFile = NULL;
+		return FALSE;
+	}
+	StateFile = NULL;
+
+	if (nFileError != Z_OK)
+		return FALSE;
+
 	return TRUE;
 }
 
 int StateSav_ReadAtariState(const char *filename, const char *mode)
 {
+	char header_string[8];
+	UBYTE StateVersion = 0;  /* The version of the save file */
+	UBYTE SaveVerbose = 0;   /* Verbose mode means save basic, OS if patched */
+
 	if (StateFile != NULL) {
 		GZCLOSE(StateFile);
 		StateFile = NULL;
@@ -450,51 +430,6 @@ int StateSav_ReadAtariState(const char *filename, const char *mode)
 		GetGZErrorText();
 		return FALSE;
 	}
-
-	if( StateSav_ReadAtariStateInternal() == FALSE )
-		return FALSE;
-
-	GZCLOSE(StateFile);
-	StateFile = NULL;
-
-	if (nFileError != Z_OK)
-		return FALSE;
-
-	return TRUE;
-}
-
-
-int StateSav_ReadAtariStateMem(const char* data, size_t size)
-{
-	if (StateFile != NULL) {
-		GZCLOSE(StateFile);
-		StateFile = NULL;
-	}
-	nFileError = Z_OK;
-
-	StateFile = fmemopen((char* )data, size, "r");
-
-	if (StateFile == NULL) {
-		return FALSE;
-	}
-
-	if (StateSav_ReadAtariStateInternal() == FALSE)
-		return FALSE;
-
-	GZCLOSE(StateFile);
-	StateFile = NULL;
-
-	if (nFileError != Z_OK)
-		return FALSE;
-
-	return TRUE;
-}
-
-int StateSav_ReadAtariStateInternal()
-{
-	char header_string[8];
-	UBYTE StateVersion = 0;  /* The version of the save file */
-	UBYTE SaveVerbose = 0;   /* Verbose mode means save basic, OS if patched */
 
 	if (GZREAD(StateFile, header_string, 8) == 0) {
 		GetGZErrorText();
@@ -510,7 +445,7 @@ int StateSav_ReadAtariStateInternal()
 	}
 
 	if (GZREAD(StateFile, &StateVersion, 1) == 0
-		|| GZREAD(StateFile, &SaveVerbose, 1) == 0) {
+	 || GZREAD(StateFile, &SaveVerbose, 1) == 0) {
 		Log_print("Failed read from Atari state file.");
 		GetGZErrorText();
 		GZCLOSE(StateFile);
@@ -540,7 +475,7 @@ int StateSav_ReadAtariStateInternal()
 		XEP80_StateRead();
 #else
 		int local_xep80_enabled;
-		StateSav_ReadINT(&local_xep80_enabled, 1);
+		StateSav_ReadINT(&local_xep80_enabled,1);
 		if (local_xep80_enabled) {
 			Log_print("Cannot read this state file because this version does not support XEP80.");
 			GZCLOSE(StateFile);
@@ -554,7 +489,7 @@ int StateSav_ReadAtariStateInternal()
 #else
 		{
 			int local_mio_enabled;
-			StateSav_ReadINT(&local_mio_enabled, 1);
+			StateSav_ReadINT(&local_mio_enabled,1);
 			if (local_mio_enabled) {
 				Log_print("Cannot read this state file because this version does not support MIO.");
 				GZCLOSE(StateFile);
@@ -568,7 +503,7 @@ int StateSav_ReadAtariStateInternal()
 #else
 		{
 			int local_bb_enabled;
-			StateSav_ReadINT(&local_bb_enabled, 1);
+			StateSav_ReadINT(&local_bb_enabled,1);
 			if (local_bb_enabled) {
 				Log_print("Cannot read this state file because this version does not support the Black Box.");
 				GZCLOSE(StateFile);
@@ -582,7 +517,7 @@ int StateSav_ReadAtariStateInternal()
 #else
 		{
 			int local_xld_enabled;
-			StateSav_ReadINT(&local_xld_enabled, 1);
+			StateSav_ReadINT(&local_xld_enabled,1);
 			if (local_xld_enabled) {
 				Log_print("Cannot read this state file because this version does not support the 1400XL/1450XLD.");
 				GZCLOSE(StateFile);
@@ -595,8 +530,16 @@ int StateSav_ReadAtariStateInternal()
 #ifdef DREAMCAST
 	DCStateRead();
 #endif
+
+	GZCLOSE(StateFile);
+	StateFile = NULL;
+
+	if (nFileError != Z_OK)
+		return FALSE;
+
 	return TRUE;
 }
+
 
 /* hack to compress in memory before writing
  * - for DREAMCAST only
