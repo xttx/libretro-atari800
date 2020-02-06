@@ -48,8 +48,6 @@ extern void texture_uninit(void);
 extern void Emu_init();
 extern void Emu_uninit();
 extern void input_gui(void);
-extern int StateSav_SaveAtariStateMem(char** data, size_t* size);
-extern int StateSav_ReadAtariStateMem(const char* data, size_t size);
 
 const char *retro_save_directory;
 const char *retro_system_directory;
@@ -738,38 +736,17 @@ bool retro_load_game_special(unsigned type, const struct retro_game_info *info, 
 
 size_t retro_serialize_size(void)
 {
-	char* buf = NULL;
-	size_t size = 0;
-	bool ret = StateSav_SaveAtariStateMem(&buf, &size) == TRUE;
-	free(buf);
-
-	if (!ret || size == 0)
-		return 0;
-
-	return size;
+   return 0;
 }
 
 bool retro_serialize(void *data_, size_t size)
 {
-	char* buf = NULL;
-	size_t serializeSize = 0;
-	bool ret = StateSav_SaveAtariStateMem(&buf, &serializeSize) == TRUE;
-	if (!ret || serializeSize != size)
-	{
-		free(buf);
-		return false;
-	}
-
-	memcpy(data_, buf, size);
-
-	free(buf);
-
-	return true;
+   return false;
 }
 
 bool retro_unserialize(const void *data_, size_t size)
 {
-   return StateSav_ReadAtariStateMem(data_, size) == TRUE;
+   return false;
 }
 
 void *retro_get_memory_data(unsigned id)

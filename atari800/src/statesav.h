@@ -6,12 +6,6 @@
 int StateSav_SaveAtariState(const char *filename, const char *mode, UBYTE SaveVerbose);
 int StateSav_ReadAtariState(const char *filename, const char *mode);
 
-int StateSav_SaveAtariStateMem(char **data ,size_t *size);
-int StateSav_ReadAtariStateMem(const char *data , size_t size);
-
-int StateSav_SaveAtariStateInternal(UBYTE SaveVerbose);
-int StateSav_ReadAtariStateInternal();
-
 void StateSav_SaveUBYTE(const UBYTE *data, int num);
 void StateSav_SaveUWORD(const UWORD *data, int num);
 void StateSav_SaveINT(const int *data, int num);
