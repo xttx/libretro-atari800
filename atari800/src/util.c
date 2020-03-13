@@ -483,8 +483,8 @@ double Util_time(void)
 
 void Util_sleep(double s)
 {
-#if defined(WIIU)
-/* no need to sleep on retroarch (we are awake) so bypass it for wiiu */ 
+#if defined(__LIBRETRO__)
+/* no need to sleep on retroarch (we are awake) */ 
 return;
 #elif defined(VITA) || defined(PSP)
    sceKernelDelayThread(1e6 * s);
