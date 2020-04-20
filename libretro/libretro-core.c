@@ -31,6 +31,7 @@ int retrojoy_init=0,retro_ui_finalized=0;
 int retro_sound_finalized=0;
 
 float retro_fps=49.8607597;
+long long retro_frame_counter;
 extern int ToggleTV;
 extern int CURRENT_TV;
 
@@ -620,6 +621,8 @@ void retro_run(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
       update_variables();
+
+   retro_frame_counter++;
 
    if(pauseg==0){
 
