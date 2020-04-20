@@ -1,3 +1,5 @@
+#include <stdarg.h>
+
 #include "libretro.h"
 
 #include "libretro-core.h"
@@ -10,6 +12,10 @@
 
 cothread_t mainThread;
 cothread_t emuThread;
+
+static void fallback_log(enum retro_log_level level, const char *fmt, ...);
+
+retro_log_printf_t log_cb = fallback_log;
 
 int CROP_WIDTH;
 int CROP_HEIGHT;
@@ -59,7 +65,18 @@ static retro_video_refresh_t video_cb;
 static retro_audio_sample_t audio_cb;
 static retro_audio_sample_batch_t audio_batch_cb;
 static retro_environment_t environ_cb;
-retro_log_printf_t log_cb;
+
+
+static void fallback_log(enum retro_log_level level, const char *fmt, ...)
+{
+	va_list va;
+
+	(void)level;
+
+	va_start(va, fmt);
+	vfprintf(stderr, fmt, va);
+	va_end(va);
+}
 
 void retro_set_environment(retro_environment_t cb)
 {
@@ -360,11 +377,11 @@ static void update_variables(void)
 
 static void retro_wrap_emulator()
 {    
-LOGI("WRAP EMU THD\n");
+   log_cb(RETRO_LOG_INFO, "WRAP EMU THD\n");
    pre_main(RPATH);
 
 
-LOGI("EXIT EMU THD\n");
+   log_cb(RETRO_LOG_INFO, "EXIT EMU THD\n");
    pauseg=-1;
 
    //environ_cb(RETRO_ENVIRONMENT_SHUTDOWN, 0); 
@@ -375,7 +392,7 @@ LOGI("EXIT EMU THD\n");
    // Dead emulator, but libco says not to return
    while(true)
    {
-      LOGI("Running a dead emulator.");
+      log_cb(RETRO_LOG_INFO, "Running a dead emulator.");
       co_switch(mainThread);
    }
 
@@ -408,7 +425,7 @@ void Emu_uninit(){
 
 void retro_shutdown_core(void)
 {
-   LOGI("SHUTDOWN\n");
+   log_cb(RETRO_LOG_INFO, "SHUTDOWN\n");
 
    texture_uninit();
    environ_cb(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
@@ -453,8 +470,6 @@ void retro_init(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log))
       log_cb = log.log;
-   else
-      log_cb = NULL;
 	
    const char *system_dir = NULL;
 
@@ -490,9 +505,9 @@ void retro_init(void)
 
    sprintf(retro_system_data_directory, "%s/data\0",RETRO_DIR);
 
-   LOGI("Retro SYSTEM_DIRECTORY %s\n",retro_system_directory);
-   LOGI("Retro SAVE_DIRECTORY %s\n",retro_save_directory);
-   LOGI("Retro CONTENT_DIRECTORY %s\n",retro_content_directory);
+   log_cb(RETRO_LOG_INFO, "Retro SYSTEM_DIRECTORY %s\n",retro_system_directory);
+   log_cb(RETRO_LOG_INFO, "Retro SAVE_DIRECTORY %s\n",retro_save_directory);
+   log_cb(RETRO_LOG_INFO, "Retro CONTENT_DIRECTORY %s\n",retro_content_directory);
 
 #ifndef RENDER16B
     	enum retro_pixel_format fmt =RETRO_PIXEL_FORMAT_XRGB8888;
@@ -503,7 +518,7 @@ void retro_init(void)
    if (!environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt))
    {
       fprintf(stderr, "PIXEL FORMAT is not supported.\n");
-LOGI("PIXEL FORMAT is not supported.\n");
+log_cb(RETRO_LOG_INFO, "PIXEL FORMAT is not supported.\n");
       exit(0);
    }
 
@@ -540,17 +555,17 @@ void retro_deinit(void)
 
 
    co_switch(emuThread);
-LOGI("exit emu\n");
+log_cb(RETRO_LOG_INFO, "exit emu\n");
   // main_exit();
    co_switch(mainThread);
-LOGI("exit main\n");
+log_cb(RETRO_LOG_INFO, "exit main\n");
    if(emuThread)
    {	 
       co_delete(emuThread);
       emuThread = 0;
    }
 
-   LOGI("Retro DeInit\n");
+   log_cb(RETRO_LOG_INFO, "Retro DeInit\n");
 }
 
 unsigned retro_api_version(void)
