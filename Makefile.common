@@ -14,7 +14,9 @@ SOURCES_C := \
 
 SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
 	$(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
-	$(LIBRETRO_COMM_DIR)/file/file_path.c 
+	$(LIBRETRO_COMM_DIR)/file/file_path.c \
+	$(LIBRETRO_COMM_DIR)/file/file_path_io.c \
+	$(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c
 
 SOURCES_C += \
 	$(CORE_DIR)/libretro/libretro-core.c \
