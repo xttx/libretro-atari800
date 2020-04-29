@@ -16,17 +16,6 @@ char DISKA_NAME[512]="\0";
 char DISKB_NAME[512]="\0";
 char TAPE_NAME[512]="\0";
 
-//TIME
-#ifdef __CELLOS_LV2__
-#include "sys/sys_time.h"
-#include "sys/timer.h"
-#define usleep  sys_timer_usleep
-#else
-#include <sys/types.h>
-#include <sys/time.h>
-#include <time.h>
-#endif
-
 extern void Screen_SetFullUpdate(int scr);
 
 long frame=0;
@@ -103,36 +92,6 @@ void retro_set_input_poll(retro_input_poll_t cb)
    input_poll_cb = cb;
 }
 
-long GetTicks(void)
-{ // in MSec
-#ifndef _ANDROID_
-
-#ifdef __CELLOS_LV2__
-
-   //#warning "GetTick PS3\n"
-
-   unsigned long	ticks_micro;
-   uint64_t secs;
-   uint64_t nsecs;
-
-   sys_time_get_current_time(&secs, &nsecs);
-   ticks_micro =  secs * 1000000UL + (nsecs / 1000);
-
-   return ticks_micro;///1000;
-#else
-   struct timeval tv;
-   gettimeofday (&tv, NULL);
-   return (tv.tv_sec*1000000 + tv.tv_usec);///1000;
-#endif
-
-#else
-
-   struct timespec now;
-   clock_gettime(CLOCK_MONOTONIC, &now);
-   return (now.tv_sec*1000000 + now.tv_nsec/1000);///1000;
-#endif
-
-} 
 int slowdown=0;
 
 #if defined(ANDROID) || defined(__ANDROID__)

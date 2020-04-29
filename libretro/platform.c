@@ -647,9 +647,12 @@ void PLATFORM_DisplayScreen(void)
 	retro_Render();
 }
 
+extern float retro_fps;
+extern long long retro_frame_counter;
+
 double PLATFORM_Time(void)
 {
-	return GetTicks()/1000 ;//* 1e-3;
+        return retro_frame_counter * (1000.0 / retro_fps);
 }
 
 void PLATFORM_PaletteUpdate(void)

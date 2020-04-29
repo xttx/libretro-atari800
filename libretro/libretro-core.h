@@ -41,14 +41,6 @@ extern char Key_Sate2[512];
 
 extern int pauseg; 
 
-#if  defined(__ANDROID__) || defined(ANDROID)
-#include <android/log.h>
-#define LOG_TAG "RetroArch.Atari800"
-#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#else
-#define LOGI printf
-#endif
-
 #define NPLGN 12
 #define NLIGN 5
 #define NLETT 5
