@@ -524,22 +524,9 @@
 /* Define to allow volume only sound. */
 /* #undef VOL_ONLY_SOUND */
 
-/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
-   significant byte first (like Motorola and SPARC, unlike Intel). */
-#if defined AC_APPLE_UNIVERSAL_BUILD
-# if defined __BIG_ENDIAN__
-#  define WORDS_BIGENDIAN 1
-# endif
-#else
-# ifndef WORDS_BIGENDIAN
-/* #  undef WORDS_BIGENDIAN */
-# endif
-#endif
+/* retro_endianness.h defines WORDS_BIGENDIAN if necessarry.  */
+#include <retro_endianness.h>
 
-
-#ifdef WIIU
-  #define WORDS_BIGENDIAN 1
-#endif
 /* Define if unaligned word access is ok. */
 #if defined(__i386__) || defined(__x86_64__) || defined(__m68k__)
 #define WORDS_UNALIGNED_OK 1
