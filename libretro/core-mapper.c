@@ -1,6 +1,8 @@
 #include "libretro.h"
 #include "libretro-core.h"
 #include "retroscreen.h"
+#include "platform.h"
+#include "vkbd.h"
 //CORE VAR
 #ifdef _WIN32
 char slash = '\\';
@@ -80,6 +82,7 @@ int STAT_BASEY;
 
 /*static*/ retro_input_state_t input_state_cb;
 static retro_input_poll_t input_poll_cb;
+extern void retro_audio_cb( short l, short r);
 
 
 void retro_set_input_state(retro_input_state_t cb)
