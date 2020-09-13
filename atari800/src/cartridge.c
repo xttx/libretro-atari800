@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "atari.h"
+#include "crc32.h"
 #include "binload.h" /* BINLOAD_loading_basic */
 #include "cartridge.h"
 #include "memory.h"
