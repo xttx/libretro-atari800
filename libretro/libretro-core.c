@@ -66,6 +66,8 @@ static retro_audio_sample_t audio_cb;
 static retro_audio_sample_batch_t audio_batch_cb;
 static retro_environment_t environ_cb;
 
+bool libretro_supports_bitmasks = false;
+
 
 static void fallback_log(enum retro_log_level level, const char *fmt, ...)
 {
@@ -546,6 +548,9 @@ log_cb(RETRO_LOG_INFO, "PIXEL FORMAT is not supported.\n");
    Emu_init();
 
    texture_init();
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL))
+      libretro_supports_bitmasks = true;
 }
 
 extern void main_exit();
@@ -566,6 +571,8 @@ log_cb(RETRO_LOG_INFO, "exit main\n");
    }
 
    log_cb(RETRO_LOG_INFO, "Retro DeInit\n");
+
+   libretro_supports_bitmasks = false;
 }
 
 unsigned retro_api_version(void)

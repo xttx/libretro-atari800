@@ -55,6 +55,7 @@ int touch=-1; // gui mouse btn
 int al[2][2];//left analog1
 int ar[2][2];//right analog1
 unsigned char MXjoy[4]; // joy
+int16_t joypad_bits[4];
 
 #define JOYRANGE_UP_VALUE     -16384     /* Joystick ranges in XY */
 #define JOYRANGE_DOWN_VALUE    16383
@@ -84,6 +85,7 @@ int STAT_BASEY;
 static retro_input_poll_t input_poll_cb;
 extern void retro_audio_cb( short l, short r);
 
+extern bool libretro_supports_bitmasks;
 
 void retro_set_input_state(retro_input_state_t cb)
 {
@@ -183,41 +185,41 @@ void retro_virtualkb(void)
 
    if(oldi!=-1)
    {
-	vkbd_key(oldi,0);
-        oldi=-1;
+	  vkbd_key(oldi,0);
+      oldi=-1;
    }
 
    if(SHOWKEY==1)
    {
       static int vkflag[5]={0,0,0,0,0};		
 
-      if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP) && vkflag[0]==0 )
+      if ( (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_UP)) && vkflag[0]==0 )
          vkflag[0]=1;
-      else if (vkflag[0]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP) )
+      else if (vkflag[0]==1 && !(joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_UP)) )
       {
          vkflag[0]=0;
          vky -= 1; 
       }
 
-      if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN) && vkflag[1]==0 )
+      if ( (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_DOWN)) && vkflag[1]==0 )
          vkflag[1]=1;
-      else if (vkflag[1]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN) )
+      else if (vkflag[1]==1 && !(joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_DOWN)) )
       {
          vkflag[1]=0;
          vky += 1; 
       }
 
-      if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT) && vkflag[2]==0 )
+      if ( (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_LEFT)) && vkflag[2]==0 )
          vkflag[2]=1;
-      else if (vkflag[2]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT) )
+      else if (vkflag[2]==1 && !(joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_LEFT)) )
       {
          vkflag[2]=0;
          vkx -= 1;
       }
 
-      if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT) && vkflag[3]==0 )
+      if ( (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT)) && vkflag[3]==0 )
          vkflag[3]=1;
-      else if (vkflag[3]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT) )
+      else if (vkflag[3]==1 && !(joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT)) )
       {
          vkflag[3]=0;
          vkx += 1;
@@ -231,19 +233,19 @@ void retro_virtualkb(void)
       virtual_kdb(( char *)Retro_Screen,vkx,vky);
  
       i=8;
-      if(input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i)  && vkflag[4]==0) 	
+      if( (joypad_bits[0] & (1 << i)) && vkflag[4]==0 ) 	
          vkflag[4]=1;
-      else if( !input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i)  && vkflag[4]==1)
+      else if( !(joypad_bits[0] & (1 << i)) && vkflag[4]==1 )
       {
          vkflag[4]=0;
          i=check_vkey2(vkx,vky);
 
-         if(i==-1){
+         if(i==-1)
             oldi=-1;
-		 }
          if(i==-2)
          {
-            NPAGE=-NPAGE;oldi=-1;
+            NPAGE=-NPAGE;
+            oldi=-1;
          }
          else if(i==-3)
          {
@@ -259,31 +261,15 @@ void retro_virtualkb(void)
             SHOWKEY=-SHOWKEY;
          }
          else if(i==-5)
-         {
             oldi=-1;
-         }
          else if(i==-6)
-         {
-	    //Exit
-	    //retro_deinit();
-	    oldi=-1;
-	    //SHUTDOWN
-            
-         }
+	        oldi=-1;
          else if(i==-7)
-         {
-
             oldi=-1;
-         }
          else if(i==-8)
-         {
-
             oldi=-1;
-         }
-
          else
          {
-
             if(i==RETROK_LSHIFT) //SHIFT
             {
                SHIFTON=-SHIFTON;
@@ -296,19 +282,19 @@ void retro_virtualkb(void)
 
                oldi=-1;
             }
-	    else if(i==-12) //RSTOP
+            else if(i==-12) //RSTOP
             {
-		//(RETROK_ESCAPE);            
+		       //(RETROK_ESCAPE);            
                RSTOPON=-RSTOPON;
 
                oldi=-1;
             }
-	    else if(i==-13) //GUI
+	        else if(i==-13) //GUI
             {     
-		SHOWKEY=-SHOWKEY;
+		        SHOWKEY=-SHOWKEY;
                 oldi=-1;
             }
-	    else if(i==-14) //JOY PORT TOGGLE
+	        else if(i==-14) //JOY PORT TOGGLE
             {    
                SHOWKEY=-SHOWKEY;
                oldi=-1;
@@ -316,15 +302,11 @@ void retro_virtualkb(void)
             else
             {
                oldi=i;
-    	      vkbd_key(oldi,1);            
+    	       vkbd_key(oldi,1);            
             }
-
          }
       }
-
    }
-
-
 }
 
 void Screen_SetFullUpdate(int scr)
@@ -400,13 +382,12 @@ void Process_key()
         	}
 
 	memcpy(old_Key_Sate,Key_Sate , sizeof(Key_Sate) );
-
 }
 
 int Retro_PollEvent()
 {
-    //   RETRO        B    Y    SLT  STA  UP   DWN  LEFT RGT  A    X    L    R    L2   R2   L3   R3
-    //   INDEX        0    1    2    3    4    5    6    7    8    9    10   11   12   13   14   15
+   //   RETRO        B    Y    SLT  STA  UP   DWN  LEFT RGT  A    X    L    R    L2   R2   L3   R3
+   //   INDEX        0    1     2    3   4     5    6    7   8    9    10   11   12   13   14   15
 
    int SAVPAS=PAS;
    int i,j;
@@ -419,6 +400,18 @@ int Retro_PollEvent()
 
    input_poll_cb();
 
+   for (j = 0; j < 4; j++)
+   {
+      if (libretro_supports_bitmasks)
+         joypad_bits[j] = input_state_cb(j, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+      else
+      {
+         joypad_bits[j] = 0;
+         for (i = 0; i < (RETRO_DEVICE_ID_JOYPAD_R3+1); i++)
+            joypad_bits[j] |= input_state_cb(j, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
+      }
+   }
+
    int mouse_l;
    int mouse_r;
    int16_t mouse_x,mouse_y;
@@ -427,27 +420,27 @@ int Retro_PollEvent()
    if(SHOWKEY==-1 && pauseg==0)Process_key();
 
    //Joy mode
-   for(j=0;j<4;j++){
-
+   for(j=0;j<4;j++)
+   {
       for(i=4;i<10;i++)
       {
-         if( input_state_cb(j, RETRO_DEVICE_JOYPAD, 0, i)) {
+         if(joypad_bits[j] & (1 << i))
             MXjoy[j] |= vbt[j][i]; // Joy press
-	    fprintf(stderr, "[Libretro-atari800]: MXjoy press controller %u slot %u.\n", j, i);
-	}
-	 else if( MXjoy[j]&vbt[j][i])MXjoy[j] &= ~vbt[j][i]; // Joy press
+	     else if( MXjoy[j] & vbt[j][i])
+            MXjoy[j] &= ~vbt[j][i]; // Joy press
       }
+   }
 
-  }
+   if(a5200_joyhack) //hack for robotron right analog act as Joy1
+   {
+      int x,y;
 
-  if(a5200_joyhack) //hack for robotron right analog act as Joy1
-  {
       //emulate Joy1 with joy analog right 
       ar[0][0] = (input_state_cb(0, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X));
       ar[0][1] = (input_state_cb(0, RETRO_DEVICE_ANALOG, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y));
 
-	int x=ar[0][0];
-	int y=ar[0][1];
+	  x=ar[0][0];
+	  y=ar[0][1];
 
       /* Directions */
 
@@ -463,38 +456,36 @@ int Retro_PollEvent()
    }
 
 
-   if(atari_devices[0]==RETRO_DEVICE_ATARI_JOYSTICK){
-   //shortcut for joy mode only
+   if(atari_devices[0]==RETRO_DEVICE_ATARI_JOYSTICK)
+   {
+      //shortcut for joy mode only
 
-   //Button  B    Y    SLT  STA
-   //	     0    1    2    3
-   	for(i=0;i<4;i++){
-
-	   if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) && mbt[i]==0 ) {
-	      mbt[i]=1;
-	      fprintf(stderr, "[Libretro-atari800]: atari_devices press slot %u.\n", i);
-	   }
-	   else if ( mbt[i]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) )
-	   {
-	      mbt[i]=0;
-	      if(i==2)MOUSE_EMULATED=-MOUSE_EMULATED;
-	   }
-   	}
-   //Button  L    R    L2   R2   L3   R3
-   //        10   11   12   13   14   15
-   	for(i=10;i<16;i++){
-
-	   if ( input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) && mbt[i]==0 ) {
-	      fprintf(stderr, "[Libretro-atari800]: atari_devices press slot %u.\n", i);
-	      mbt[i]=1;
-	   }
-	   else if ( mbt[i]==1 && ! input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) )
-	   {
-	      mbt[i]=0;
-	      if(i==14)SHOWKEY=-SHOWKEY;
-	   }
-   	}
-
+      //Button  B    Y    SLT  STA
+      //	    0    1     2    3
+   	  for(i=0;i<4;i++)
+      {
+	     if ( (joypad_bits[0] & (1 << i)) && mbt[i]==0 )
+	        mbt[i]=1;
+	     else if ( mbt[i]==1 && !(joypad_bits[0] && (1 << i)) )
+	     {
+	        mbt[i]=0;
+	        if(i==2)
+               MOUSE_EMULATED = -MOUSE_EMULATED;
+         }
+   	  }
+      //Button  L    R    L2   R2   L3   R3
+      //        10   11   12   13   14   15
+   	  for(i=10;i<16;i++)
+      {
+         if ( (joypad_bits[0] & (1 << i)) && mbt[i]==0 )
+	        mbt[i]=1;
+	     else if ( mbt[i]==1 && !(joypad_bits[0] & (1 << i)) )
+	     {
+	        mbt[i]=0;
+	        if(i==14)
+               SHOWKEY = -SHOWKEY;
+         }
+      }
    }//if atari_devices=joy
 
 
@@ -502,18 +493,19 @@ int Retro_PollEvent()
 
 	  if(slowdown>0)return 1;
 
-      if (input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT))mouse_x += PAS;
-      if (input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT))mouse_x -= PAS;
-      if (input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN))mouse_y += PAS;
-      if (input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP))mouse_y -= PAS;
-      mouse_l=input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A);
-      mouse_r=input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B);
+      if (joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT)) mouse_x += PAS;
+      if (joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_LEFT)) mouse_x -= PAS;
+      if (joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_DOWN)) mouse_y += PAS;
+      if (joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_UP)) mouse_y -= PAS;
+      mouse_l = joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_A) ? 1 : 0;
+      mouse_r = joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_B) ? 1 : 0;
 
       PAS=SAVPAS;
 
 	  slowdown=1;
    }
-   else {
+   else
+   {
       //printf("-----------------%d \n",pauseg);
       mouse_wu = input_state_cb(0, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_WHEELUP);
       mouse_wd = input_state_cb(0, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_WHEELDOWN);
@@ -526,26 +518,23 @@ int Retro_PollEvent()
 
    static int mmbL=0,mmbR=0;
 
-   if(mmbL==0 && mouse_l){
-
+   if(mmbL==0 && mouse_l)
+   {
       mmbL=1;
       pushi=1;
       touch=1;
-
    }
-   else if(mmbL==1 && !mouse_l) {
-
+   else if(mmbL==1 && !mouse_l)
+   {
       mmbL=0;
       pushi=0;
       touch=-1;
    }
 
-   if(mmbR==0 && mouse_r){
+   if(mmbR==0 && mouse_r)
       mmbR=1;
-   }
-   else if(mmbR==1 && !mouse_r) {
+   else if(mmbR==1 && !mouse_r)
       mmbR=0;
-   }
 
    gmx+=mouse_x;
    gmy+=mouse_y;
@@ -555,9 +544,8 @@ int Retro_PollEvent()
    if(gmy>retroh-1)gmy=retroh-1;
 
 
-  if(SHOWKEY==1 && pauseg==0)retro_virtualkb();
+   if(SHOWKEY==1 && pauseg==0)retro_virtualkb();
 
-return 1;
-
+   return 1;
 }
 
