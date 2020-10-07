@@ -1,3 +1,4 @@
+DEPS_DIR     	   := $(CORE_DIR)/deps
 LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro/libretro-common
 
 INCFLAGS := -I$(CORE_DIR) \
@@ -84,3 +85,27 @@ SOURCES_C += \
 #	$(CORE_DIR)/atari800/src/videomode.c\
 #	$(CORE_DIR)/atari800/src/pal_blending.c \
 
+ZLIB_INCFLAGS = -I$(DEPS_DIR)/zlib
+ZLIB_SOURCES_C = \
+	$(DEPS_DIR)/zlib/adler32.c \
+	$(DEPS_DIR)/zlib/compress.c \
+	$(DEPS_DIR)/zlib/crc32.c \
+	$(DEPS_DIR)/zlib/deflate.c \
+	$(DEPS_DIR)/zlib/gzclose.c \
+	$(DEPS_DIR)/zlib/gzlib.c \
+	$(DEPS_DIR)/zlib/gzread.c \
+	$(DEPS_DIR)/zlib/gzwrite.c \
+	$(DEPS_DIR)/zlib/inffast.c \
+	$(DEPS_DIR)/zlib/inflate.c \
+	$(DEPS_DIR)/zlib/inftrees.c \
+	$(DEPS_DIR)/zlib/trees.c \
+	$(DEPS_DIR)/zlib/uncompr.c \
+	$(DEPS_DIR)/zlib/zutil.c
+
+ifeq ($(SYSTEM_ZLIB), 1)
+   INCFLAGS += $(shell pkg-config --cflags zlib)
+   LIBS += $(shell pkg-config --libs zlib)
+else
+   INCFLAGS += $(ZLIB_INCFLAGS)
+   SOURCES_C += $(ZLIB_SOURCES_C)
+endif

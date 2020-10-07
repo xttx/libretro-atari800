@@ -51,7 +51,6 @@ endif
 
 CC_AS ?= $(CC)
 LIBM  :=  -lm
-LIBZ  := -lz
 # Unix
 ifneq (,$(findstring unix,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro.so
@@ -62,7 +61,6 @@ else ifneq (,$(findstring linux-portable,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro.so
 	fpic := -fPIC -nostdlib
 	LIBM :=
-	LIBZ :=
 	SHARED := -shared -Wl,-version-script=link.T
 # android arm
 else ifneq (,$(findstring android,$(platform)))
@@ -491,7 +489,7 @@ CFLAGS   += -Wall
 CXXFLAGS += $(fpic) $(DEFINES)
 CXXFLAGS += -Wall
 
-LDFLAGS += $(LIBM) $(LIBZ)
+LDFLAGS += $(LIBM)
 
 ROMS =
 SNAPS =
