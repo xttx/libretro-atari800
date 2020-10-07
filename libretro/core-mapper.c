@@ -490,16 +490,16 @@ int Retro_PollEvent()
       if(slowdown>0)
          return 1;
 
-      if (joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT))
+      if (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT))
          mouse_x += PAS;
-      if (joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_LEFT))
+      if (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_LEFT))
          mouse_x -= PAS;
-      if (joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_DOWN))
+      if (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_DOWN))
          mouse_y += PAS;
-      if (joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_UP))
+      if (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_UP))
          mouse_y -= PAS;
-      mouse_l = joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_A) ? 1 : 0;
-      mouse_r = joypad_bits[0] && (1 << RETRO_DEVICE_ID_JOYPAD_B) ? 1 : 0;
+      mouse_l = (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_A)) ? 1 : 0;
+      mouse_r = (joypad_bits[0] & (1 << RETRO_DEVICE_ID_JOYPAD_B)) ? 1 : 0;
 
       PAS=SAVPAS;
 
