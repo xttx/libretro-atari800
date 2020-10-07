@@ -3,7 +3,8 @@ LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro/libretro-common
 INCFLAGS := -I$(CORE_DIR) \
             -I$(CORE_DIR)/atari800/src \
             -I$(CORE_DIR)/libretro  \
-            -I$(LIBRETRO_COMM_DIR)/include
+            -I$(LIBRETRO_COMM_DIR)/include \
+            -I$(LIBRETRO_COMM_DIR)/include/compat/zlib \
 
 ifeq ($(STATIC_LINKING), 1)
 INCFLAGS += -I$(CORE_DIR)/libretro/include

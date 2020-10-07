@@ -1,12 +1,6 @@
 #ifndef _COMPAT_ZLIB_H
 #define _COMPAT_ZLIB_H
 
-#ifdef WANT_ZLIB
-
-#ifdef RARCH_INTERNAL
-#include "zconf.h.in"
-#endif
-
 /* zlib.h -- interface of the 'zlib' general purpose compression library
   version 1.2.8, April 28th, 2013
 
@@ -1742,9 +1736,8 @@ uint32_t adler32 (uint32_t adler, const uint8_t *buf, size_t len);
  const char   *  zError           (int);
  int             inflateSyncPoint (z_streamp);
 
- const uint32_t * get_crc_table(void);
+const uint32_t * get_crc_table(void);
  int             inflateUndermine (z_streamp, int);
- int             inflateValidate  (z_streamp, int);
  int             inflateResetKeep (z_streamp);
  int             deflateResetKeep (z_streamp);
 #if defined(_WIN32) && !defined(Z_SOLO)
@@ -1764,9 +1757,5 @@ uint32_t adler32 (uint32_t adler, const uint8_t *buf, size_t len);
 #endif
 
 #endif /* ZLIB_H */
-
-#else
-#include <zlib.h>
-#endif
 
 #endif
