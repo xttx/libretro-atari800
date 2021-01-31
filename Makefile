@@ -83,10 +83,20 @@ else ifeq ($(platform), osx)
 	fpic := -fPIC
 	SHARED := -dynamiclib
 	OSXVER = `sw_vers -productVersion | cut -d. -f 2`
+        CFLAGS += -DHAVE_POSIX_MEMALIGN
 	OSX_LT_MAVERICKS = `(( $(OSXVER) <= 9)) && echo "YES"`
 	ifeq ($(OSX_LT_MAVERICKS),"YES")
 		fpic += -mmacosx-version-min=10.5
 	endif
+
+   ifeq ($(CROSS_COMPILE),1)
+		TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CFLAGS   += $(TARGET_RULE)
+		CPPFLAGS += $(TARGET_RULE)
+		CXXFLAGS += $(TARGET_RULE)
+		LDFLAGS  += $(TARGET_RULE)
+   endif
+
 
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
@@ -102,9 +112,11 @@ else ifneq (,$(findstring ios,$(platform)))
 
 ifeq ($(platform),$(filter $(platform),ios-arm64))
 	CC = cc -arch arm64 -isysroot $(IOSSDK)
+	CC_AS = cc -arch arm64 -isysroot $(IOSSDK)
 	CXX = c++ -arch arm64 -isysroot $(IOSSDK)
 else
 	CC = cc -arch armv7 -isysroot $(IOSSDK)
+	CC_AS = cc -arch armv7 -isysroot $(IOSSDK)
 	CXX = c++ -arch armv7 -isysroot $(IOSSDK)
 endif
 
