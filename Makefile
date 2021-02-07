@@ -179,9 +179,19 @@ else ifeq ($(platform), psl1ght)
 	STATIC_LINKING = 1
 	HAVE_COMPAT = 1
 
+# PS2
+else ifeq ($(platform), ps2)
+	TARGET := $(TARGET_NAME)_libretro_$(platform).a
+	CC = mips64r5900el-ps2-elf-gcc$(EXE_EXT)
+	AR = mips64r5900el-ps2-elf-ar$(EXE_EXT)
+	PLATFORM_DEFINES := -DPS2 -D_EE -DABGR1555 -G0 -O3
+	STATIC_LINKING = 1
+	HAVE_COMPAT = 1
+	EXTRA_INCLUDES := -I$(PS2SDK)/ee/include -I$(PS2SDK)/common/include
+
 # PSP
 else ifeq ($(platform), psp1)
-	TARGET := $(TARGET_NAME)_libretro_psp1.a
+	TARGET := $(TARGET_NAME)_libretro_$(platform).a
 	CC = psp-gcc$(EXE_EXT)
 	AR = psp-ar$(EXE_EXT)
 	PLATFORM_DEFINES := -DPSP
@@ -489,7 +499,7 @@ include Makefile.common
 HEADERS += $(ROMS:.rom=.h) $(SNAPS:.szx=.h)
 OBJECTS += $(SOURCES_C:.c=.o) $(SOURCES_CXX:.cpp=.o)
 
-INCDIRS := $(EXTRA_INCLUDES) $(INCFLAGS)
+INCDIRS := $(INCFLAGS) $(EXTRA_INCLUDES)
 
 OBJOUT   = -o
 LINKOUT  = -o 

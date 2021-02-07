@@ -568,6 +568,10 @@
    code using `volatile' can become incorrect without. Disable with care. */
 /* #undef volatile */
 
+#if defined(PS2)
+#undef HAVE_CHMOD
+#endif
+
 #if defined(VITA) || defined(PSP)
 
 #undef HAVE_CHMOD
