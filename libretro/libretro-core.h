@@ -59,7 +59,11 @@ extern int pauseg;
 #ifndef  RENDER16B
 #define RGB565(r, g, b)  (((r) << (5+16)) | ((g) << (5+8)) | (b<<5))
 #else
+#if defined(ABGR1555)
+#define RGB565(r, g, b)  (((b) << (10)) | ((g) << 5) | (r))
+#else
 #define RGB565(r, g, b)  (((r) << (5+6)) | ((g) << 6) | (b))
+#endif
 #endif
 #define uint32 unsigned int
 #define uint8 unsigned char
