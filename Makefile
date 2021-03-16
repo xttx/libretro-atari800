@@ -105,7 +105,7 @@ else ifneq (,$(findstring ios,$(platform)))
 	fpic := -fPIC
 	SHARED := -dynamiclib
         MINVERSION :=
-	CFLAGS += -Wno-error=implicit-function-declaration -DHAVE_POSIX_MEMALIGN
+	CFLAGS += -Wno-error=implicit-function-declaration -DHAVE_POSIX_MEMALIGN -DIOS -marm
 
 	ifeq ($(IOSSDK),)
 		IOSSDK := $(shell xcodebuild -version -sdk iphoneos Path)
