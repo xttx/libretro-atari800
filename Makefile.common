@@ -88,7 +88,6 @@ SOURCES_C += \
 ZLIB_INCFLAGS = -I$(DEPS_DIR)/zlib
 ZLIB_SOURCES_C = \
 	$(DEPS_DIR)/zlib/adler32.c \
-	$(DEPS_DIR)/zlib/compress.c \
 	$(DEPS_DIR)/zlib/crc32.c \
 	$(DEPS_DIR)/zlib/deflate.c \
 	$(DEPS_DIR)/zlib/gzclose.c \
@@ -99,7 +98,6 @@ ZLIB_SOURCES_C = \
 	$(DEPS_DIR)/zlib/inflate.c \
 	$(DEPS_DIR)/zlib/inftrees.c \
 	$(DEPS_DIR)/zlib/trees.c \
-	$(DEPS_DIR)/zlib/uncompr.c \
 	$(DEPS_DIR)/zlib/zutil.c
 
 ifeq ($(SYSTEM_ZLIB), 1)
