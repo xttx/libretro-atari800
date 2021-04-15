@@ -114,7 +114,7 @@ void retro_set_environment(retro_environment_t cb)
     struct retro_variable variables[] = {
       {
         "atari800_system",
-        "Atari System; 400/800 (OS B)|800XL (64K)|130XE (128K)|Modern XL/XE(576K)|Modern XL/XE(1088K)|5200",
+        "Atari System; 400/800 (OS B)|800XL (64K)|130XE (128K)|Modern XL/XE(320K CS)|Modern XL/XE(576K)|Modern XL/XE(1088K)|5200",
       },
       {
         "atari800_ntscpal",
@@ -240,6 +240,18 @@ static void update_variables(void)
         {
             Atari800_machine_type = Atari800_MACHINE_XLXE;
             MEMORY_ram_size = 128;
+            Atari800_builtin_basic = TRUE;
+            Atari800_keyboard_leds = FALSE;
+            Atari800_f_keys = FALSE;
+            Atari800_jumper = FALSE;
+            Atari800_builtin_game = FALSE;
+            Atari800_keyboard_detached = FALSE;
+            Atari800_InitialiseMachine();
+        }
+        else if (strcmp(var.value, "Modern XL/XE(320K CS)") == 0)
+        {
+            Atari800_machine_type = Atari800_MACHINE_XLXE;
+            MEMORY_ram_size = MEMORY_RAM_320_COMPY_SHOP;
             Atari800_builtin_basic = TRUE;
             Atari800_keyboard_leds = FALSE;
             Atari800_f_keys = FALSE;
@@ -549,9 +561,9 @@ void retro_init(void)
     }
 
     struct retro_input_descriptor inputDescriptors[] = {
-        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A, "A" },
-        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B, "B" },
-        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X, "X" },
+        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A, "Fire 1" },
+        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B, "Return" },
+        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X, "Fire 2" },
         { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y, "Y" },
         { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT, "Select" },
         { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START, "Start" },
@@ -559,12 +571,12 @@ void retro_init(void)
         { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT, "Left" },
         { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP, "Up" },
         { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN, "Down" },
-        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R, "R" },
-        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L, "L" },
-        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2, "R2" },
-        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2, "L2" },
+        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R, "Atari800 Menu" },
+        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L, "Option" },
+        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2, "Esc" },
+        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2, "Space" },
         { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R3, "R3" },
-        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L3, "L3" },
+        { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L3, "Virtual keyboard" },
         { 0 }
     };
     environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, &inputDescriptors);
