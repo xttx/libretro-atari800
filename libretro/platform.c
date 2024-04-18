@@ -220,15 +220,27 @@ int PLATFORM_Keyboard(void)
 
 	/* OPTION / SELECT / START keys */
 	INPUT_key_consol = INPUT_CONSOL_NONE;
-	if (Key_State[RETROK_F2])
+	if (Key_State[mapper_keys[RETRO_MAPPER_OPT]])
 		INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
-	if (Key_State[RETROK_F3])
+	if (Key_State[mapper_keys[RETRO_MAPPER_SELECT]])
 		INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
-	if (Key_State[RETROK_F4])
+	if (Key_State[mapper_keys[RETRO_MAPPER_START]])
 		INPUT_key_consol &= (~INPUT_CONSOL_START);
 
 	/* Handle movement and special keys. */
-	if (Key_State[RETROK_F1])	return AKEY_UI;
+	static int ui_key_released = 1;
+	if (Key_State[mapper_keys[RETRO_MAPPER_UI]]) {
+		if (ui_key_released) {
+			ui_key_released = 0;
+			if (UI_is_active)
+				return AKEY_ESCAPE;
+			else
+				return AKEY_UI;
+		}
+	}
+	else {
+		ui_key_released = 1;
+	}
 
 	if (Key_State[RETROK_F5] && (Atari800_machine_type != Atari800_MACHINE_5200))
 		return INPUT_key_shift ? AKEY_COLDSTART : AKEY_WARMSTART;

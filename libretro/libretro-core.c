@@ -98,6 +98,8 @@ static struct retro_input_descriptor inputDescriptors_a5200[] =
 };
 #undef RETRO_DESCRIPTOR_BLOCK
 
+int mapper_keys[RETRO_MAPPER_LAST] = { 0 };
+
 /* Dynamic inputdescripter */
 static struct retro_input_descriptor inputDescriptors_dyna[(ATARI_JOYPAD_BUTTONS * ATARI_NUMBER_JOYSTICKS) + 1];
 
@@ -516,6 +518,18 @@ void retro_set_environment(retro_environment_t cb)
     cb(RETRO_ENVIRONMENT_SET_CONTROLLER_INFO, (void*)ports);
 }
 
+int retro_keymap_id(const char* val)
+{
+    int i = 0;
+    while (retro_keys[i].id < RETROK_LAST)
+    {
+        if (!strcmp(retro_keys[i].value, val))
+            return retro_keys[i].id;
+        i++;
+    }
+    return 0;
+}
+
 static void update_variables(void)
 {
     struct retro_variable var;
@@ -898,6 +912,35 @@ static void update_variables(void)
     {
         unsigned deadzone = string_to_unsigned(var.value);
         pot_analog_deadzone = (int)((float)deadzone * 0.01f * (float)LIBRETRO_ANALOG_RANGE);
+    }
+
+    /* System Keys Remapping */
+    var.key = "keyboard_mapper_ui";
+    var.value = NULL;
+    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+    {
+        mapper_keys[RETRO_MAPPER_UI] = retro_keymap_id(var.value);
+    }
+
+    var.key = "keyboard_mapper_option";
+    var.value = NULL;
+    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+    {
+        mapper_keys[RETRO_MAPPER_OPT] = retro_keymap_id(var.value);
+    }
+
+    var.key = "keyboard_mapper_select";
+    var.value = NULL;
+    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+    {
+        mapper_keys[RETRO_MAPPER_SELECT] = retro_keymap_id(var.value);
+    }
+
+    var.key = "keyboard_mapper_start";
+    var.value = NULL;
+    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+    {
+        mapper_keys[RETRO_MAPPER_START] = retro_keymap_id(var.value);
     }
 }
 

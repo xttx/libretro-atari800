@@ -38,6 +38,13 @@ extern cothread_t emuThread;
 
 extern char Key_State[512];
 
+#define RETRO_MAPPER_LAST   4
+#define RETRO_MAPPER_UI     0
+#define RETRO_MAPPER_OPT    1
+#define RETRO_MAPPER_SELECT 2
+#define RETRO_MAPPER_START  3
+extern int mapper_keys[RETRO_MAPPER_LAST];
+
 extern int pauseg; 
 
 #define NPLGN 12
